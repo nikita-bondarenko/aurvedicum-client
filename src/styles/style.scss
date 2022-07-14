@@ -1,0 +1,21 @@
+$almostDark: #222;
+$light: #d1d1d1;
+$green: #32d296;
+$red: #f0506e;
+$inputBackground: #fafafa;
+
+$grey: #e2e2e2;
+
+* {
+    box-sizing: border-box !important;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
