@@ -19,7 +19,7 @@
           <use xlink:href="#icon-cart"></use>
         </svg>
         <span class="header__count" aria-label="Количество товаров">{{
-          basketItems.length
+          store.basketItemsQuantity
         }}</span>
       </router-link>
     </div>
@@ -33,7 +33,7 @@ import useApi from '@/hooks/useApi'
 const route = useRoute()
 
 const { getBasket } = useApi()
-const { basketPaginationConfig, basketItems } = toRefs(store)
+const { basketPaginationConfig } = toRefs(store)
 const pageTitle = computed(() => {
   if (route.name === 'item') {
     return 'Страница товара'

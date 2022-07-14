@@ -20,12 +20,18 @@ const setAccessKey = (key) => {
 export default function () {
   // const store = useStore()
   const updateBasketData = (data) => {
+    console.log(data)
     if (data.items) {
       store.updateProp('basketItems', data.items)
     }
     if (data.pagination) {
       store.updateProp('basketPagination', data.pagination)
     }
+
+    store.updateProp('basketItemsQuantity', data.itemsQuantity)
+    store.updateProp('basketTotalPrice', data.totalPrice)
+
+    console.log(store)
   }
   const getProducts = async (body) => {
     const res = await axios.get(`${API_URL}/api/products`, { params: body }, {
@@ -111,8 +117,9 @@ export default function () {
 
   const addToBasket = async (body) => {
     console.log(body)
+    console.log(store.basketPaginationConfig)
     const res = await axios.post(`${API_URL}/api/basket`,
-      Object.assign(body, store.paginationConfig),
+      Object.assign(body, { basketId: userAccessKey }, store.basketPaginationConfig),
       {
         params: {
           userAccessKey
@@ -170,18 +177,22 @@ export default function () {
 
   const updateBasketItemQuantity = async (body) => {
     const res = await axios.patch(`${API_URL}/api/basket`,
-      { ...body, basketId: userAccessKey },
+      Object.assign(body, { basketId: userAccessKey }, store.basketPaginationConfig),
       {
         'Content-Type': 'application/json',
         Accept: '*/*'
       }
     )
+    if (res.data) {
+      updateBasketData(res.data)
+    }
+
     return res
   }
 
   const deleteBasketItem = async (body) => {
     const res = await axios.delete(`${API_URL}/api/basket`,
-      { params: { ...body, basketId: userAccessKey } }
+      { params: Object.assign(body, { basketId: userAccessKey }, store.basketPaginationConfig) }
       ,
       {
         'Content-Type': 'application/json',

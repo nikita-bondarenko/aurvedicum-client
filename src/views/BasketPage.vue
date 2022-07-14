@@ -23,7 +23,10 @@
     </div>
 
     <section v-else class="cart">
-      <form class="cart__form form" action="#" method="POST">
+      <p style="text-align: center" v-if="basketItems.length === 0">
+        Корзина пуста
+      </p>
+      <form v-else class="cart__form form" action="#" method="POST">
         <div class="cart__field">
           <ul class="cart__list">
             <BasketItem
@@ -73,6 +76,8 @@ export default defineComponent({
     const { pluralizeProductAmount, editNumberFormat } = useEditors()
 
     const {
+      basketItemsQuantity,
+      basketTotalPrice,
       basketItems,
       isBasketLoading,
       isBasketLoadingFailed,
@@ -90,10 +95,12 @@ export default defineComponent({
         console.log(basketPaginationConfig.value)
       }
     })
+
+    console.log(store)
     watch(
       () => isBasketLoading.value,
       (value) => {
-        console.log(value)
+        // console.log(value)
       },
       { deep: true }
     )
@@ -101,21 +108,11 @@ export default defineComponent({
       return basketItems.value.length > 0
     })
     const total = computed(() => {
-      if (basketItems.value.length === 0) return pluralizeProductAmount(0)
-
-      const quantity = basketItems.value.reduce(
-        (acc, item) => acc + item.quantity,
-        0
-      )
-      return pluralizeProductAmount(quantity)
+      return pluralizeProductAmount(basketItemsQuantity.value)
     })
 
     const totalPrice = computed(() => {
-      return (
-        editNumberFormat(
-          basketItems.value.reduce((acc, item) => acc + item.price, 0)
-        ) || 0
-      )
+      return editNumberFormat(basketTotalPrice.value)
     })
     return {
       config,
