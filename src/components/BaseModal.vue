@@ -25,7 +25,7 @@
 
 import { defineComponent, ref, watch } from 'vue'
 import useModal from '@/hooks/useModal'
-import DeleteButton from '@/components/DeleteButton.vue'
+import DeleteButton from '@/components/small/DeleteButton.vue'
 
 export default defineComponent({
   props: {

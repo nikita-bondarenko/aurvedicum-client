@@ -16,7 +16,18 @@ export default function () {
     return text
   }
 
+  const deliveryPriceText = (price) => {
+    if (price === 0) return 'бесплатно'
+    return editNumberFormat(Number(price)) + ' ' + '₽'
+  }
+
+  const editDate = (date) => {
+    return Intl.DateTimeFormat('ru-RU', { dateStyle: 'short', timeStyle: 'short' }).format(date)
+  }
+
   return {
+    editDate,
+    deliveryPriceText,
     editVolumeFormat,
     editNumberFormat,
     pluralizeProductAmount,

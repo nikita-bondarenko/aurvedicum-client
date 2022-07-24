@@ -10,26 +10,31 @@
     </div>
 
     <div class="content__catalog">
-      <CatalogFilter
+      <BaseFilter
         v-model:search="searchValue"
         v-model:settings="config"
-      ></CatalogFilter>
+      ></BaseFilter>
       <section class="catalog">
         <BaseSpinner v-if="isLoading"></BaseSpinner>
         <CatalogItems v-else :items="items"></CatalogItems>
-        <PaginationBase v-model:config="config" :pagination="pagination" />
+        <PaginationBase
+          v-if="pagination.pages > 1"
+          class="catalog__pagination"
+          v-model:config="config"
+          :pagination="pagination"
+        />
       </section>
     </div>
   </main>
 </template>
 <script setup>
 /* eslint-disable */
-import CatalogFilter from '@/components/catalog/CatalogFilter.vue'
+import BaseFilter from '@/components/BaseFilter.vue'
 import CatalogItems from '@/components/catalog/CatalogItems.vue'
-import PaginationBase from '@/components/PaginationBase.vue'
+import PaginationBase from '@/components/small/PaginationBase.vue'
 import useApi from '@/hooks/useApi'
 import { ref, watch, computed } from 'vue'
-import BaseSpinner from '../components/BaseSpinner.vue'
+import BaseSpinner from '../components/small/BaseSpinner.vue'
 import useEditors from '@/hooks/useEditors'
 import { useRoute } from 'vue-router'
 const categoryId = useRoute().params.categoryId || ''

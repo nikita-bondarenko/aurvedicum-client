@@ -2,10 +2,14 @@
 
 import axios from 'axios'
 import { API_URL } from '@/config.js'
-// import { useStore } from 'vuex'
 import { store } from '@/store/store'
 const headers = {
   'Content-Type': 'application/x-www-form-urlencoded',
+  Accept: '*/*'
+}
+
+const jsonHeader = {
+  'Content-Type': 'application/json',
   Accept: '*/*'
 }
 let userAccessKey = localStorage.getItem('userAccessKey') || null
@@ -18,9 +22,7 @@ const setAccessKey = (key) => {
 }
 
 export default function () {
-  // const store = useStore()
   const updateBasketData = (data) => {
-    console.log(data)
     if (data.items) {
       store.updateProp('basketItems', data.items)
     }
@@ -30,8 +32,6 @@ export default function () {
 
     store.updateProp('basketItemsQuantity', data.itemsQuantity)
     store.updateProp('basketTotalPrice', data.totalPrice)
-
-    console.log(store)
   }
   const getProducts = async (body) => {
     const res = await axios.get(`${API_URL}/api/products`, { params: body }, {
@@ -107,17 +107,14 @@ export default function () {
           filename
         }
       },
-      {
-        'Content-Type': 'application/json',
-        Accept: '*/*'
-      }
+      jsonHeader
     )
     return res
   }
 
   const addToBasket = async (body) => {
-    console.log(body)
-    console.log(store.basketPaginationConfig)
+    store.updateProp('basketCounterLoading', true)
+
     const res = await axios.post(`${API_URL}/api/basket`,
       Object.assign(body, { basketId: userAccessKey }, store.basketPaginationConfig),
       {
@@ -125,13 +122,11 @@ export default function () {
           userAccessKey
         }
       },
-      {
-        'Content-Type': 'application/json',
-
-        Accept: '*/*'
-      }
+      jsonHeader
     )
     if (res.data) {
+      store.updateProp('basketCounterLoading', false)
+
       setAccessKey(res.data.userAccessKey)
       updateBasketData(res.data)
     }
@@ -149,13 +144,12 @@ export default function () {
             userAccessKey
           }
         },
-        {
-          'Content-Type': 'application/json',
-          Accept: '*/*'
-        }
+        jsonHeader
       )
 
       if (res.data) {
+        store.updateProp('basketCounterLoading', false)
+
         store.updateProp('isBasketLoading', false)
         setAccessKey(res.data.userAccessKey)
         updateBasketData(res.data)
@@ -176,14 +170,15 @@ export default function () {
   }
 
   const updateBasketItemQuantity = async (body) => {
+    store.updateProp('basketCounterLoading', true)
+
     const res = await axios.patch(`${API_URL}/api/basket`,
       Object.assign(body, { basketId: userAccessKey }, store.basketPaginationConfig),
-      {
-        'Content-Type': 'application/json',
-        Accept: '*/*'
-      }
+      jsonHeader
     )
     if (res.data) {
+      store.updateProp('basketCounterLoading', false)
+
       updateBasketData(res.data)
     }
 
@@ -191,21 +186,70 @@ export default function () {
   }
 
   const deleteBasketItem = async (body) => {
+    store.updateProp('basketCounterLoading', true)
     const res = await axios.delete(`${API_URL}/api/basket`,
       { params: Object.assign(body, { basketId: userAccessKey }, store.basketPaginationConfig) }
       ,
-      {
-        'Content-Type': 'application/json',
-        Accept: '*/*'
-      }
+      jsonHeader
     )
     if (res.data) {
       updateBasketData(res.data)
+      store.updateProp('basketCounterLoading', false)
     }
     return res
   }
 
+  const getDeliveries = async () => {
+    const res = await axios.get(`${API_URL}/api/deliveries`,
+      jsonHeader
+    )
+
+    return res
+  }
+
+  const postOrder = async (body) => {
+    return axios.post(`${API_URL}/api/order`,
+      { ...body, basketId: userAccessKey, basketPrice: store.basketTotalPrice },
+      jsonHeader)
+  }
+
+  const getOrder = async (id) => {
+    return axios.get(`${API_URL}/api/order/${id}`,
+
+      jsonHeader)
+  }
+
+  const fetch = async (method, url, body, string = 'Loading') => {
+    store.updateProp(`is${string}`, true)
+    store.updateProp(`is${string}Failed`, false)
+    return axios[method](`${API_URL}/${url}`,
+      body,
+      jsonHeader)
+      .then((res) => res)
+      .catch(() => store.updateProp(`is${string}Failed`, true))
+      .then(() => store.updateProp(`is${string}`, false))
+  }
+
+  const fetchWithParams = async (method, url, params, string = 'Loading') => {
+    store.updateProp(`is${string}`, true)
+    store.updateProp(`is${string}Failed`, false)
+
+    return axios[method](`${API_URL}/${url}`,
+      { params },
+      jsonHeader)
+      .catch(() => store.updateProp(`is${string}Failed`, true))
+      .then((res) => {
+        store.updateProp(`is${string}`, false)
+        return res
+      })
+  }
+
   return {
+    fetchWithParams,
+    fetch,
+    getOrder,
+    postOrder,
+    getDeliveries,
     deleteBasketItem,
     updateBasketItemQuantity,
     getProductData,

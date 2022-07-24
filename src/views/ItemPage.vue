@@ -31,7 +31,7 @@
       страницу.
     </div>
 
-    <section v-else class="item product">
+    <section v-else class="item">
       <div class="item__pics pics">
         <div
           class="pics__wrapper"
@@ -52,7 +52,7 @@
                 href=""
                 @click.prevent="image = item"
                 class="pics__link"
-                :class="{ 'pics__link--current': item === image }"
+                :class="{ 'pics__link--current': item.id === image.id }"
               >
                 <img alt="Изображение товара" :src="item.url" />
                 <!-- :src="IMAGE_STATIC + item.filename"
@@ -80,7 +80,7 @@
             </div>
             <div class="item__row item__row--center">
               <BaseCounter
-                :class="{ 'disabled': volume.quantity === 0 }"
+                :class="{ disabled: volume.quantity === 0 }"
                 v-model:quantity="quantity"
                 :volume="volume"
               ></BaseCounter>
@@ -123,9 +123,14 @@
 
             <button
               class="button button--primery"
-              :class="{ 'button-error': quantityError }"
+              :class="{
+                'button-error': quantityError,
+                'spinner-small': store.basketCounterLoading,
+                'button--added': isAdded
+              }"
               type="submit"
             >
+              <div>Товар добавлен в корзину</div>
               {{
                 quantityError ? 'Недопустимое количество товара' : 'В корзину'
               }}
@@ -164,13 +169,14 @@
 <script setup>
 /* eslint-disable */
 import { useRoute } from 'vue-router'
+import { store } from '@/store/store'
 import { ref, watch } from 'vue'
 import useApi from '@/hooks/useApi'
 import useEditors from '@/hooks/useEditors'
 import { IMAGE_STATIC } from '@/config.js'
-import BaseSelect from '@/components/BaseSelect.vue'
-import BaseCounter from '@/components/BaseCounter.vue'
-import BaseSpinner from '@/components/BaseSpinner.vue'
+import BaseSelect from '@/components/small/BaseSelect.vue'
+import BaseCounter from '@/components/small/BaseCounter.vue'
+import BaseSpinner from '@/components/small/BaseSpinner.vue'
 
 const productId = useRoute().params.id
 const { getProductData, addToBasket } = useApi()
@@ -180,12 +186,13 @@ const volumeId = ref('')
 const volume = ref({})
 const isLoading = ref(true)
 const isLoadingFailed = ref(false)
+const isAdded = ref(false)
 const isNoProducts = ref(false)
 const quantityError = ref(true)
 const quantity = ref(1)
 const isOneVolume = ref(false)
 const isSubprice = ref(false)
-const image = ref('')
+const image = ref({})
 const { editNumberFormat, pluralizeProductAmount } = useEditors()
 
 getProductData(productId)
@@ -248,12 +255,52 @@ const addProduct = async () => {
   const res = await addToBasket({
     quantity: quantity.value,
     productId: product.value.id,
-    volumeId: volume.value.id
+    volumeId: volume.value.id,
+    isAdd: true
   })
 }
+
+watch(
+  () => store.basketCounterLoading,
+  (value) => {
+    if (!value) {
+      isAdded.value = true
+      setTimeout(() => (isAdded.value = false), 1000)
+    }
+  }
+)
 </script>
 <style lang="scss">
 @import '@/styles/style.scss';
+
+.button--primery {
+  position: relative;
+
+  transition: background 0.2s ease-in-out;
+  div {
+    content: 'Товар добавлен в корзину';
+    color: white;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 600;
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    transition: transform 0.5s ease-in-out;
+  }
+}
+
+.button--added {
+  background-color: $green !important;
+  div {
+    transform: translate(-50%, 0px);
+  }
+}
+
+.spinner-small::after {
+  @include basketItemSpinner;
+}
 
 @mixin selectBorderColor {
   cursor: pointer;

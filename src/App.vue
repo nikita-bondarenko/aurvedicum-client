@@ -10,7 +10,92 @@ import BaseHeader from './components/BaseHeader.vue'
 import BaseFooter from './components/BaseFooter.vue'
 </script>
 <style lang="scss">
+@import '@/../public/css/style.min.css';
+
 @import '@/styles/style.scss';
+
+// @font-face {
+//   font-display: swap;
+//   font-weight: 300;
+//   font-family: 'Geometria';
+//   font-style: normal;
+//   src: url(./fonts/Geometria-Light.woff2) format('woff2');
+// }
+// @font-face {
+//   font-display: swap;
+//   font-weight: 400;
+//   font-family: 'Geometria';
+//   font-style: normal;
+//   src: url(./fonts/Geometria-Regular.woff2) format('woff2');
+// }
+// @font-face {
+//   font-display: swap;
+//   font-weight: 500;
+//   font-family: 'Geometria';
+//   font-style: normal;
+//   src: url(./fonts/Geometria-Medium.woff2) format('woff2');
+// }
+// @font-face {
+//   font-display: swap;
+//   font-weight: 700;
+//   font-family: 'Geometria';
+//   font-style: normal;
+//   src: url(./fonts/Geometria-Bold.woff2) format('woff2');
+// }
+// @font-face {
+//   font-display: swap;
+//   font-weight: 900;
+//   font-family: 'Geometria';
+//   font-style: normal;
+//   src: url(./fonts/Geometria-ExtraBold.woff2) format('woff2');
+// }
+// @font-face {
+//   font-display: swap;
+//   font-weight: 400;
+//   font-family: 'Circe';
+//   font-style: normal;
+//   src: url(./fonts/Circe-Regular.woff2) format('woff2');
+// }
+// @font-face {
+//   font-display: swap;
+//   font-weight: 700;
+//   font-family: 'Circe';
+//   font-style: normal;
+//   src: url(./fonts/Circe-Bold.woff2) format('woff2');
+// }
+
+*,
+::after,
+::before {
+  box-sizing: border-box !important;
+}
+
+.pagination__item {
+  cursor: pointer;
+}
+
+.loading-error {
+  position: relative;
+  @include disabled;
+  &::after {
+    z-index: 10000;
+    position: absolute;
+    content: 'Не удалось загрузить товар';
+    color: $red;
+    text-align: center;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 20px;
+    max-width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.filter {
+  z-index: 10000;
+}
 
 .disabled {
   pointer-events: none;
@@ -104,7 +189,7 @@ img {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 740px) {
   .header__wrapper {
     grid-column-gap: 20px;
   }
@@ -151,6 +236,9 @@ img {
       height: 555px;
       .form {
         transform: translateY(0);
+      }
+      &_overflow {
+        overflow: visible;
       }
     }
   }

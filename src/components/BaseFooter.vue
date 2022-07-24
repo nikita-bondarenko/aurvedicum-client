@@ -20,15 +20,17 @@
           </a>
         </li>
         <li>
-          <a
+          <router-link
+            v-if="!route.path.split('/').includes('admin')"
             class="footer__link"
-            href="#"
-            target="_blank"
-            rel="noopener"
-            type="application/pdf"
+            :to="{ name: 'admin' }"
           >
-            Публичная оферта
-          </a>
+            Я администратор
+          </router-link>
+
+          <router-link v-else class="footer__link" :to="{ name: 'catalog' }">
+            Вернуться к каталогу
+          </router-link>
         </li>
       </ul>
 
@@ -36,4 +38,7 @@
     </div>
   </footer>
 </template>
-<script setup></script>
+<script setup>
+import { useRoute } from 'vue-router'
+const route = useRoute()
+</script>

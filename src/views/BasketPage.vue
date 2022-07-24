@@ -13,7 +13,7 @@
       </ul>
       <div class="content__row">
         <h1 class="content__title">Корзина</h1>
-        <span class="content__info"> {{ total }} в корзине </span>
+        <span class="content__info">В корзине {{ total.toLowerCase() }} </span>
       </div>
     </div>
     <BaseSpinner v-if="isBasketLoading && !isBasketLoadingFailed"></BaseSpinner>
@@ -50,24 +50,24 @@
             Итого: <span>{{ totalPrice }} &nbsp;₽</span>
           </p>
 
-          <button
+          <router-link
+            :to="{ name: 'order' }"
             v-show="isEmpty"
             class="cart__button button button--primery"
-            type="submit"
           >
             Оформить заказ
-          </button>
+          </router-link>
         </div>
       </form>
     </section>
   </main>
 </template>
 <script>
-import { computed, toRefs, defineComponent, watch } from 'vue'
+import { computed, toRefs, defineComponent } from 'vue'
 import useEditors from '@/hooks/useEditors'
-import BasketItem from '@/components/BasketItem.vue'
-import BaseSpinner from '@/components/BaseSpinner.vue'
-import PaginationBase from '@/components/PaginationBase.vue'
+import BasketItem from '@/components/basket/BasketItem.vue'
+import BaseSpinner from '@/components/small/BaseSpinner.vue'
+import PaginationBase from '@/components/small/PaginationBase.vue'
 import { store } from '@/store/store'
 
 export default defineComponent({
@@ -90,20 +90,10 @@ export default defineComponent({
         return basketPaginationConfig.value
       },
       set(value) {
-        console.log(value)
         store.updateProp('basketPaginationConfig', value)
-        console.log(basketPaginationConfig.value)
       }
     })
 
-    console.log(store)
-    watch(
-      () => isBasketLoading.value,
-      (value) => {
-        // console.log(value)
-      },
-      { deep: true }
-    )
     const isEmpty = computed(() => {
       return basketItems.value.length > 0
     })
@@ -129,8 +119,9 @@ export default defineComponent({
 })
 </script>
 <style lang="scss">
-.catalog__pagination {
-  margin-top: 50px;
+.button--primery {
+  display: block;
+  text-align: center;
 }
 
 .product {

@@ -3,12 +3,11 @@ $light: #d1d1d1;
 $green: #32d296;
 $red: #f0506e;
 $inputBackground: #fafafa;
-
+$darkGrey: #b9b9b9;
 $grey: #e2e2e2;
 
-* {
-    box-sizing: border-box !important;
-}
+
+
 
 ul {
     list-style-type: none;
@@ -18,4 +17,89 @@ ul {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
+}
+
+@mixin disabled {
+    &::before {
+        z-index: 100;
+        position: absolute;
+        content: '';
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        opacity: 0.7;
+        background: white;
+    }
+}
+
+@mixin spinner {
+    &::after {
+        z-index: 1000;
+        position: absolute;
+        content: '' !important;
+        left: calc(50% - 50px);
+        top: calc(50% - 50px);
+        width: 100px;
+        height: 100px;
+        border: 10px solid transparent;
+        border-top-color: $red;
+        border-radius: 50%;
+        animation: circle 1s infinite;
+        transform-origin: center;
+    }
+}
+
+
+.spinner-small {
+    pointer-events: none;
+    position: relative;
+    @include disabled;
+    @include spinner;
+}
+
+
+
+@mixin basketItemSpinner {
+    left: calc(50% - 30px);
+    top: calc(50% - 30px);
+    width: 60px;
+    height: 60px;
+    border-width: 7px;
+}
+
+.spinner-button-small {
+    pointer-events: none;
+    position: relative;
+    @include disabled;
+    @include spinner;
+
+    &::after {
+        @include basketItemSpinner;
+    }
+}
+
+.header__count {
+    padding-top: 4px;
+    background-color: $red;
+    font-size: 12px;
+    line-height: 12px;
+    min-width: 18px;
+    height: 18px;
+    bottom: -1px;
+    right: -5px;
+}
+
+.header__cart {
+    height: 33px;
+}
+
+@keyframes circle {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
