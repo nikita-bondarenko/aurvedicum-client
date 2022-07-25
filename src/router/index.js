@@ -41,6 +41,11 @@ const routes = [
         component: () => import('@/components/admin/AdminProducts.vue')
       },
       {
+        path: '/admin/products/add',
+        name: 'adminAddProduct',
+        component: () => import('@/components/admin/AdminAddProduct.vue')
+      },
+      {
         path: '/admin/contacts',
         name: 'adminContacts',
         component: () => import('@/components/admin/AdminContacts.vue')
@@ -55,6 +60,7 @@ const routes = [
         name: 'adminPolitics',
         component: () => import('@/components/admin/AdminPolitics.vue')
       }
+
     ]
   }
 ]

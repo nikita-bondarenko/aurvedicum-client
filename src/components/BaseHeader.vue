@@ -112,7 +112,6 @@ const logout = () => {
 fetchWithParams('get', 'admin/', {
   sessionId: localStorage.getItem('sessionId') || ''
 }).then((res) => {
-  console.log(res)
   store.updateProp('isAuth', res.data)
 })
 
@@ -136,7 +135,7 @@ watch(
   () => route.path,
   (value) => {
     const arr = value.split('/').filter((item) => item.length > 0)
-    if (arr[arr.length - 2] === 'admin') {
+    if (arr[arr.length - 2] === 'admin' || arr[arr.length - 3] === 'admin') {
       store.updateProp('adminPage', route.name)
     }
   }

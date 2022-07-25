@@ -33,7 +33,14 @@
           </li>
         </ul>
       </nav>
-
+      <div class="content__right">
+        <router-link
+          v-if="route.name === 'adminProducts'"
+          :to="{ name: 'adminAddProduct' }"
+          class="data-base__add-button"
+          >Добавить товар</router-link
+        >
+      </div>
       <router-view></router-view>
     </div>
 
@@ -68,9 +75,10 @@
 import { reactive, ref, watch } from 'vue'
 import FormInput from '@/components/form/FormInput.vue'
 import AdminFormPassword from '@/components/admin/AdminFormPassword.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import useApi from '@/hooks/useApi'
 import { store } from '@/store/store'
+const route = useRoute()
 const router = useRouter()
 const formData = reactive({})
 const { fetch } = useApi()
@@ -96,11 +104,6 @@ watch(
       router.push({ name: store.adminPage })
     }
   },
-  { immediate: true }
-)
-watch(
-  () => store.adminPage,
-  (value) => console.log(value),
   { immediate: true }
 )
 </script>
@@ -131,10 +134,26 @@ watch(
 .content__top {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin-right: auto;
+  width: fit-content;
 }
 
 .router-link-active {
   color: black;
+}
+
+@media (max-width: 465px) {
+  .breadcrumbs {
+    &__item:not(:last-child) {
+      padding-right: 16px;
+      &::after {
+        font-size: 10px;
+        right: 3px;
+      }
+    }
+    &__link {
+      font-size: 12px;
+    }
+  }
 }
 </style>

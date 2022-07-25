@@ -226,8 +226,14 @@ export default function () {
       body,
       jsonHeader)
       .then((res) => res)
-      .catch(() => store.updateProp(`is${string}Failed`, true))
-      .then(() => store.updateProp(`is${string}`, false))
+      .catch((err) => {
+        store.updateProp(`is${string}Failed`, true)
+
+        throw err
+      })
+      .then((res) => {
+        store.updateProp(`is${string}`, false)
+      })
   }
 
   const fetchWithParams = async (method, url, params, string = 'Loading') => {
@@ -237,7 +243,10 @@ export default function () {
     return axios[method](`${API_URL}/${url}`,
       { params },
       jsonHeader)
-      .catch(() => store.updateProp(`is${string}Failed`, true))
+      .catch((err) => {
+        store.updateProp(`is${string}Failed`, true)
+        throw err
+      })
       .then((res) => {
         store.updateProp(`is${string}`, false)
         return res

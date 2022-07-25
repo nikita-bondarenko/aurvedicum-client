@@ -94,6 +94,41 @@ input::-webkit-inner-spin-button {
     height: 33px;
 }
 
+
+.button-del {
+    cursor: pointer;
+
+    svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    path {
+        transition: stroke 0.2s ease-in-out;
+    }
+
+    &:hover {
+        path {
+            stroke: $almostDark;
+        }
+    }
+}
+
+@mixin smallFont {
+    font-size: 14px;
+    color: $darkGrey;
+}
+
+@mixin button {
+    transition: color 0.2s ease-in-out;
+    text-transform: uppercase;
+    font-weight: 500;
+
+    &:hover {
+        color: $almostDark;
+    }
+}
+
 @keyframes circle {
     from {
         transform: rotate(0deg);

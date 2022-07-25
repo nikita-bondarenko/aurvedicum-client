@@ -1,12 +1,7 @@
-<template>
+<template lang="">
   <FormField :label-text="labelText" :error-text="errorValue">
     <!-- eslint-disable-next-line -->
-    <textarea
-      @input="updateErrorStatus"
-      class="form__input form__input--area"
-      v-model="value"
-      :placeholder="placeholderText"
-    ></textarea>
+    <slot></slot>
   </FormField>
 </template>
 <script>
@@ -15,12 +10,18 @@ import { defineComponent, ref, watch } from 'vue'
 
 export default defineComponent({
   mixins: [formFieldMixin],
+  props: ['id'],
   setup(props) {
     const errorValue = ref()
 
-    const updateErrorStatus = (e) => {
-      errorValue.value = !e.target.value.trim() ? props.errorText : null
+    const updateErrorStatus = () => {
+      errorValue.value = !props.id ? props.errorText : null
     }
+
+    watch(
+      () => props.id,
+      () => updateErrorStatus()
+    )
 
     watch(
       () => props.errorText,
@@ -28,17 +29,19 @@ export default defineComponent({
         errorValue.value = value
       }
     )
+
     return {
-      updateErrorStatus,
-      errorValue
+      errorValue,
+      updateErrorStatus
     }
   }
 })
 </script>
-<style lang="scss">
-.form__input--area {
-  resize: vertical;
-  overflow: auto;
-  padding: 13px 30px 13px 20px;
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 </style>

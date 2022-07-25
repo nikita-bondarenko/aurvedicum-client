@@ -118,7 +118,6 @@ const searchValue = computed({
     return ''
   },
   set(value) {
-    console.log(value)
     config.value.name = value
   }
 })
@@ -141,29 +140,34 @@ const priceInput = ref(null)
 const changePrice = (e) => {
   input.value = priceInput.value[priceInput.value.indexOf(e.target)]
 }
-
-watch(
-  () => input.value,
-  (value, oldValue) => {
-    console.log(value)
-    // let index
-    // value.forEach((value, i) => (value !== oldValue[i] ? (index = i) : 1))
-    // console.log(priceInput.value[index])
-  },
-  { deep: true }
-)
 </script>
 <style lang="scss">
 @import '@/styles/style.scss';
 
-@mixin smallFont {
-  font-size: 14px;
-  color: $darkGrey;
-}
 .subprice {
   position: relative;
 }
+
 .data-base {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  .content__right {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
+
+  &__add-button {
+    @include smallFont;
+    @include button;
+  }
+
+  .content__catalog {
+    grid-column: 1/3;
+  }
+
   &__product {
     display: grid;
     grid-template-columns: 1fr 1fr 30px;
@@ -191,12 +195,7 @@ watch(
     grid-row: 4/5;
     grid-column: 1/2;
     @include smallFont;
-    transition: color 0.2s ease-in-out;
-    text-transform: uppercase;
-    font-weight: 500;
-    &:hover {
-      color: $almostDark;
-    }
+    @include button;
   }
   &__volume {
     grid-row: 1/5;
@@ -205,15 +204,6 @@ watch(
   &__button-del {
     grid-row: 1/2;
     grid-column: 3/4;
-    cursor: pointer;
-    path {
-      transition: stroke 0.2s ease-in-out;
-    }
-    &:hover {
-      path {
-        stroke: $almostDark;
-      }
-    }
   }
 
   &__list {
