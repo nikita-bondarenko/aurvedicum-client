@@ -8,6 +8,7 @@
     <input
       @input="uploadImage($event)"
       class="form__input form__file-input"
+      :class="{ 'form__file-input--filled': isFilled }"
       type="file"
       :placeholder="placeholderText"
     />
@@ -29,6 +30,16 @@ export default defineComponent({
     const updateErrorStatus = () => {
       errorValue.value = !props.filename ? props.errorText : null
     }
+    const isFilled = ref(false)
+    watch(
+      () => props.filename,
+
+      (value) => {
+        isFilled.value = !!value
+      },
+      { immediate: true }
+    )
+
     const uploadImage = (e) => {
       e.target.classList.remove('form__file-input--filled')
       e.target.classList.remove('form__file-input--error')
@@ -55,7 +66,7 @@ export default defineComponent({
 
     return {
       uploadImage,
-
+      isFilled,
       errorValue,
       updateErrorStatus
     }

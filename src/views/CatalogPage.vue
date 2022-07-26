@@ -10,10 +10,7 @@
     </div>
 
     <div class="content__catalog">
-      <BaseFilter
-        v-model:search="searchValue"
-        v-model:settings="config"
-      ></BaseFilter>
+      <BaseFilter @submit="getData" v-model:settings="config"></BaseFilter>
       <section class="catalog">
         <BaseSpinner v-if="isLoading"></BaseSpinner>
         <CatalogItems v-else :items="items"></CatalogItems>
@@ -49,7 +46,7 @@ const config = ref({
   categoryId,
 
   page: 1,
-  limit: 12
+  limit: 6
 })
 const getData = async (obj = {}) => {
   isLoading.value = true
@@ -68,8 +65,8 @@ const getData = async (obj = {}) => {
 }
 getData()
 watch(
-  () => config.value,
-  (value) => {
+  () => config.value.page,
+  () => {
     getData()
   },
   { deep: true }

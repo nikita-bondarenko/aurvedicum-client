@@ -1,18 +1,11 @@
 <template>
   <div class="content__catalog">
-    <BaseFilter
-      v-model:search="searchValue"
-      v-model:settings="config"
-    ></BaseFilter>
+    <BaseFilter @submit="getData()" v-model:settings="config"></BaseFilter>
     <section class="catalog">
       <BaseSpinner v-if="store.isLoading"></BaseSpinner>
       <ul class="data-base__list">
-        <li
-          v-for="item in productsData.items"
-          :key="item.id"
-          class="data-base__item"
-        >
-          <div class="data-base__product">
+        <li v-for="item in items" :key="item.id" class="data-base__item">
+          <div class="data-base__product admin-product">
             <h3 class="data-base__name">{{ item.name }}</h3>
 
             <span class="data-base__created"
@@ -23,7 +16,7 @@
             >
             <router-link
               class="data-base__change-button"
-              :to="{ name: 'adminProducts', params: { id: item.id } }"
+              :to="{ name: 'changeProduct', params: { id: item.id } }"
               >Изменить</router-link
             >
 
@@ -61,18 +54,16 @@
                     />
                     <span class="price__currency">₽</span>
                   </div>
-                  <div class="volume-block__subprice subprice">
+                  <div class="volume-block__ceil ciel">
                     <input
                       v-if="volume.subprice"
                       ref="priceInput"
                       @keydown="changePrice"
                       type="text"
-                      class="subprice__input"
+                      class="ceil__input"
                       v-model="volume.subprice[0].value"
                     />
-                    <span v-if="volume.subprice" class="subprice__currency"
-                      >₽</span
-                    >
+                    <span v-if="volume.subprice" class="ceil__currency">₽</span>
                   </div>
                   <div class="volume-block__quantity quantity">
                     <input
@@ -100,37 +91,43 @@
           </div>
         </li>
       </ul>
+      <PaginationBase
+        v-if="pagination.pages > 1"
+        class="catalog__pagination"
+        v-model:config="config"
+        :pagination="pagination"
+      />
     </section>
   </div>
 </template>
 <script setup>
 import BaseFilter from '../BaseFilter.vue'
 import BaseSpinner from '../small/BaseSpinner.vue'
-import { computed, watch, ref } from 'vue'
+import { watch, ref } from 'vue'
 import useApi from '@/hooks/useApi'
 import { store } from '@/store/store'
 import useEditors from '@/hooks/useEditors'
+import PaginationBase from '../small/PaginationBase.vue'
 const editors = useEditors()
 const { fetchWithParams } = useApi()
-const config = ref({ page: 1, limit: 12 })
-const searchValue = computed({
-  get() {
-    return ''
-  },
-  set(value) {
-    config.value.name = value
-  }
-})
-const productsData = ref([])
+const config = ref({ page: 1, limit: 6 })
+
+const items = ref([])
+const pagination = ref({})
+
 const getData = (obj = {}) => {
+  console.log(config.value)
   fetchWithParams(
     'get',
     'api/products',
     Object.assign({}, config.value, obj)
-  ).then((res) => (productsData.value = res.data))
+  ).then((res) => {
+    items.value = res.data.items
+    pagination.value = res.data.pagination
+  })
 }
 watch(
-  () => config.value,
+  () => config.value.page,
   () => getData(),
   { deep: true }
 )
@@ -143,9 +140,9 @@ const changePrice = (e) => {
 </script>
 <style lang="scss">
 @import '@/styles/style.scss';
-
-.subprice {
-  position: relative;
+.admin-product .data-base__button-del {
+  top: -14px;
+  right: 0px;
 }
 
 .data-base {
@@ -169,6 +166,7 @@ const changePrice = (e) => {
   }
 
   &__product {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr 1fr 30px;
     grid-gap: 5px 20px;
@@ -200,10 +198,6 @@ const changePrice = (e) => {
   &__volume {
     grid-row: 1/5;
     grid-column: 2/3;
-  }
-  &__button-del {
-    grid-row: 1/2;
-    grid-column: 3/4;
   }
 
   &__list {
@@ -252,7 +246,7 @@ const changePrice = (e) => {
   //   }
   // }
   &__price,
-  &__subprice,
+  &__ceil,
   &__quantity {
     display: flex;
     justify-content: center;
@@ -276,7 +270,7 @@ const changePrice = (e) => {
     text-align: center;
   }
 
-  .subprice {
+  .ceil {
     text-decoration: line-through;
   }
 

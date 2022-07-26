@@ -2,7 +2,7 @@
   <aside class="filter">
     <form
       action="#"
-      @submit.prevent="$emit('update:search', config.name)"
+      @submit.prevent="$emit('submit')"
       class="filter__form form"
     >
       <fieldset class="form__block">
@@ -53,7 +53,7 @@ c0-82.8,68.2-150.1,151.9-150.1s151.9,67.3,151.9,150.1s-68.2,150.1-151.9,150.1S41
       :class="{ 'filter__wrapper--open': isFilter }"
     >
       <form
-        @submit.prevent="filter"
+        @submit.prevent="$emit('submit')"
         class="filter__form form"
         action="#"
         method="get"
@@ -134,7 +134,7 @@ import useApi from '@/hooks/useApi'
 import BaseSelect from '@/components/small/BaseSelect.vue'
 
 export default defineComponent({
-  emits: ['update:search', 'update:settings'],
+  emits: ['submit', 'update:settings'],
   props: ['settings'],
   setup(props, { emit }) {
     const searchValue = ref(null)
@@ -157,7 +157,7 @@ export default defineComponent({
       () => config.value,
       (value) => {
         isReset.value = Object.entries(value).some(([key, value]) => {
-          if (key !== 'limit' && key !== 'page' && value.trim().length > 0) {
+          if (key !== 'limit' && key !== 'page' && !!value) {
             return true
           }
           return false
@@ -168,25 +168,28 @@ export default defineComponent({
         if (value.minPrice && value.maxPrice) {
           isPriceError.value = value.minPrice > value.maxPrice
         }
+
+        emit('update:settings', value)
       },
       { deep: true, immediate: true }
     )
 
-    const filter = () => {
-      if (Object.values(config.value).some((value) => !!value)) {
-        emit('update:settings', Object.assign({}, props.settings, config.value))
-      }
-    }
+    // const filter = () => {
+    //   if (Object.values(config.value).some((value) => !!value)) {
+    //     emit('update:settings', Object.assign({}, props.settings, config.value))
+    //   }
+    // }
+
     const reset = () => {
-      searchValue.value = ''
-      config.value = {}
-      emit(
-        'update:settings',
-        Object.assign({
-          limit: props.settings.limit,
-          page: props.settings.page
-        })
-      )
+      config.value = {
+        limit: props.settings.limit,
+        page: props.settings.page
+      }
+      emit('update:settings', {
+        limit: props.settings.limit,
+        page: props.settings.page
+      })
+      emit('submit')
     }
 
     const wrapper = ref(null)
@@ -214,7 +217,6 @@ export default defineComponent({
       wrapper,
       openFilter,
       reset,
-      filter,
       isFilter,
       isPriceError,
       isReset,

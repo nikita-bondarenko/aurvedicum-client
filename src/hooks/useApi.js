@@ -225,14 +225,14 @@ export default function () {
     return axios[method](`${API_URL}/${url}`,
       body,
       jsonHeader)
-      .then((res) => res)
-      .catch((err) => {
-        store.updateProp(`is${string}Failed`, true)
-
-        throw err
-      })
       .then((res) => {
         store.updateProp(`is${string}`, false)
+        return res
+      })
+      .catch((err) => {
+        store.updateProp(`is${string}Failed`, true)
+        store.updateProp(`is${string}`, false)
+        throw err
       })
   }
 
@@ -243,13 +243,14 @@ export default function () {
     return axios[method](`${API_URL}/${url}`,
       { params },
       jsonHeader)
-      .catch((err) => {
-        store.updateProp(`is${string}Failed`, true)
-        throw err
-      })
       .then((res) => {
         store.updateProp(`is${string}`, false)
         return res
+      })
+      .catch((err) => {
+        store.updateProp(`is${string}Failed`, true)
+        store.updateProp(`is${string}`, false)
+        throw err
       })
   }
 

@@ -1,6 +1,6 @@
 <template>
   <fieldset
-    class="form__block"
+    class="form__block form__block--admin"
     :class="{ description__block: buttonText === 'обзац' }"
   >
     <h2 v-if="header" class="data-base__title">{{ header }}</h2>
@@ -8,6 +8,7 @@
       <slot></slot>
     </ul>
     <button
+      v-if="buttonText !== 'бренд'"
       type="button"
       @click.prevent="addItem"
       class="data-base__button-add"
@@ -29,7 +30,7 @@ const addItem = () => {
   items.push({ id })
   emit('update:items', items)
 }
-addItem()
+if (props.items.length === 0) addItem()
 </script>
 <style lang="scss">
 .description__block {

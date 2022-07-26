@@ -41,10 +41,16 @@ const routes = [
         component: () => import('@/components/admin/AdminProducts.vue')
       },
       {
+        path: '/admin/products/:id',
+        name: 'changeProduct',
+        component: () => import('@/components/admin/ChangeProduct.vue')
+      },
+      {
         path: '/admin/products/add',
         name: 'adminAddProduct',
         component: () => import('@/components/admin/AdminAddProduct.vue')
       },
+
       {
         path: '/admin/contacts',
         name: 'adminContacts',
@@ -59,9 +65,19 @@ const routes = [
         path: '/admin/politics',
         name: 'adminPolitics',
         component: () => import('@/components/admin/AdminPolitics.vue')
+      },
+      {
+        path: 'admin/:pathMatch(.*)*',
+        name: 'notFound',
+        component: () => import('@/views/NotFound.vue')
       }
 
     ]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'notFound',
+    component: () => import('@/views/NotFound.vue')
   }
 ]
 
