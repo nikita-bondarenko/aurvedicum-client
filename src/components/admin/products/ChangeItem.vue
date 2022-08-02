@@ -1,23 +1,41 @@
 <template>
+  <div class="content__top">
+    <ul class="breadcrumbs">
+      <li class="breadcrumbs__item">
+        <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
+          Меню
+        </router-link>
+      </li>
+      <li class="breadcrumbs__item">
+        <router-link :to="{ name: 'adminProducts' }" class="breadcrumbs__link">
+          Товары
+        </router-link>
+      </li>
+
+      <li class="breadcrumbs__item">
+        <span class="breadcrumbs__link" disabled> Изменение товара </span>
+      </li>
+    </ul>
+  </div>
   <BaseSpinner v-if="store.isLoading"></BaseSpinner>
 
-  <AdminForm
+  <ItemForm
     v-else
     :text="'сохранить изменения'"
     v-model:data="data"
     @submit="save"
     :formError="error"
   >
-  </AdminForm>
+  </ItemForm>
 </template>
 <script setup>
-import AdminForm from './AdminForm.vue'
+import ItemForm from '@/components/admin/products/ItemForm.vue'
 import { ref } from 'vue'
 import useApi from '@/hooks/useApi'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { store } from '@/store/store'
-import BaseSpinner from '../small/BaseSpinner.vue'
+import BaseSpinner from '@/components/small/BaseSpinner.vue'
 const { fetch } = useApi()
 const data = ref({
   volumes: [],
@@ -48,13 +66,11 @@ const save = () => {
       item.content = item.content.filter((item) => !!item.paragraph)
     })
   }
-  console.log(body)
   fetch('patch', `api/products/${id}`, body, 'SaveLoading')
     .then(() => {
       router.push({ name: 'adminProducts' })
     })
     .catch((err) => {
-      console.log(err)
       error.value = err.response.data
       data.value.description.forEach((item) => {
         if (item.content.length === 1) return

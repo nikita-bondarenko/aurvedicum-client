@@ -1,9 +1,73 @@
 <template>
   <main class="content container">
     <div class="content__top">
-      <ul class="breadcrumbs">
+      <ul v-if="isAdmin" class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <router-link :to="{ name: 'catalog' }" class="breadcrumbs__link">
+          <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
+            Меню
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminOrders' }" class="breadcrumbs__link">
+            Заказы
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link
+            :to="{ name: 'adminOrderAdd' }"
+            class="breadcrumbs__link"
+          >
+            Оформление заказа
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminCatalog' }" class="breadcrumbs__link">
+            Каталог
+          </router-link>
+        </li>
+        <li
+          class="breadcrumbs__item"
+          v-for="item in product.categories"
+          :key="item.id"
+        >
+          <router-link
+            :to="{
+              name: 'adminCatalog',
+              params: { categoryId: item.categoryId }
+            }"
+            class="breadcrumbs__link"
+            href="#"
+          >
+            {{ item.title }}
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <span class="breadcrumbs__link" disabled> {{ product.name }} </span>
+        </li>
+      </ul>
+
+      <ul v-if="store.isOrderedBasket" class="breadcrumbs">
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
+            Меню
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminOrders' }" class="breadcrumbs__link">
+            Заказы
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="store.page" class="breadcrumbs__link">
+            Изменение заказа
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link
+            :to="{ name: 'catalog' }"
+            @click="store.setCatalogPathName"
+            class="breadcrumbs__link"
+          >
             Каталог
           </router-link>
         </li>
@@ -14,6 +78,36 @@
         >
           <router-link
             :to="{ name: 'catalog', params: { categoryId: item.categoryId } }"
+            @click="store.setCatalogPathName"
+            class="breadcrumbs__link"
+            href="#"
+          >
+            {{ item.title }}
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <span class="breadcrumbs__link" disabled> {{ product.name }} </span>
+        </li>
+      </ul>
+
+      <ul v-else-if="!isAdmin" class="breadcrumbs">
+        <li class="breadcrumbs__item">
+          <router-link
+            :to="{ name: 'catalog' }"
+            @click="store.setCatalogPathName"
+            class="breadcrumbs__link"
+          >
+            Каталог
+          </router-link>
+        </li>
+        <li
+          class="breadcrumbs__item"
+          v-for="item in product.categories"
+          :key="item.id"
+        >
+          <router-link
+            :to="{ name: 'catalog', params: { categoryId: item.categoryId } }"
+            @click="store.setCatalogPathName"
             class="breadcrumbs__link"
             href="#"
           >
@@ -36,12 +130,11 @@
         <div
           class="pics__wrapper"
           :style="{
-            background: `no-repeat center/contain url('${image.url}') transparent`
+            background: `no-repeat center/contain url('${
+              IMAGE_STORE + image.filename
+            }') transparent`
           }"
         >
-          <!-- <img :src="image.url" alt="Изображение товара" /> -->
-          <!-- :src="IMAGE_STATIC + image.filename"
- -->
           <ul class="pics__list">
             <li
               class="pics__item"
@@ -54,9 +147,10 @@
                 class="pics__link"
                 :class="{ 'pics__link--current': item.id === image.id }"
               >
-                <img alt="Изображение товара" :src="item.url" />
-                <!-- :src="IMAGE_STATIC + item.filename"
- -->
+                <img
+                  alt="Изображение товара"
+                  :src="IMAGE_STORE + item.filename"
+                />
               </a>
             </li>
           </ul>
@@ -93,7 +187,7 @@
                 </b>
 
                 <span v-if="volume.subprice" class="item__subprice"
-                  >{{ editNumberFormat(volume.subprice[0].value) }}&nbsp;₽
+                  >{{ editNumberFormat(volume.subprice) }}&nbsp;₽
                 </span>
               </div>
             </div>
@@ -130,7 +224,7 @@
               }"
               type="submit"
             >
-              <div>Товар добавлен в корзину</div>
+              <div class="button__subtext">Товар добавлен</div>
               {{
                 quantityError ? 'Недопустимое количество товара' : 'В корзину'
               }}
@@ -167,17 +261,20 @@
 </template>
 
 <script setup>
-/* eslint-disable */
+// /* eslint-disable */
+import { IMAGE_STORE } from '@/config'
 import { useRoute } from 'vue-router'
 import { store } from '@/store/store'
-import { ref, watch } from 'vue'
+import { onBeforeUnmount, ref, watch, computed } from 'vue'
 import useApi from '@/hooks/useApi'
 import useEditors from '@/hooks/useEditors'
-import { IMAGE_STATIC } from '@/config.js'
 import BaseSelect from '@/components/small/BaseSelect.vue'
 import BaseCounter from '@/components/small/BaseCounter.vue'
 import BaseSpinner from '@/components/small/BaseSpinner.vue'
-
+const isAdmin = computed(() => {
+  if (!useRoute().name) return false
+  return useRoute().name === 'adminItem'
+})
 const productId = useRoute().params.id
 const { getProductData, addToBasket } = useApi()
 const product = ref({})
@@ -212,14 +309,17 @@ getProductData(productId)
   })
   .catch(() => (isLoadingFailed.value = true))
   .then(() => (isLoading.value = false))
-setInterval(() => {
+
+const intervalId = setInterval(() => {
   getProductData(productId).then((res) => {
     product.value = res
     volume.value = product.value.volumes.find(
       (volume) => volume.id === volumeId.value
     )
   })
-}, 100)
+}, 200)
+
+onBeforeUnmount(() => clearInterval(intervalId))
 const changeContent = (id) => {
   descItem.value = product.value.description.find((item) => item.id === id)
 }
@@ -252,7 +352,7 @@ const isCurrentContent = (item) => {
 }
 
 const addProduct = async () => {
-  const res = await addToBasket({
+  addToBasket({
     quantity: quantity.value,
     productId: product.value.id,
     volumeId: volume.value.id,
@@ -271,274 +371,5 @@ watch(
 )
 </script>
 <style lang="scss">
-@import '@/styles/style.scss';
-
-.button--primery {
-  position: relative;
-
-  transition: background 0.2s ease-in-out;
-  div {
-    content: 'Товар добавлен в корзину';
-    color: white;
-    text-transform: uppercase;
-    font-size: 10px;
-    font-weight: 600;
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translate(-50%, 20px);
-    transition: transform 0.5s ease-in-out;
-  }
-}
-
-.button--added {
-  background-color: $green !important;
-  div {
-    transform: translate(-50%, 0px);
-  }
-}
-
-.spinner-small::after {
-  @include basketItemSpinner;
-}
-
-@mixin selectBorderColor {
-  cursor: pointer;
-
-  background-color: $almostDark;
-  border: 1px solid transparent;
-  transition-property: border-color, color;
-  transition-duration: 0.2s;
-  transition-timing-function: ease-in-out;
-
-  &:hover {
-    color: $red !important;
-    border-color: $red;
-  }
-}
-
-.item__quantity--error {
-  color: $red;
-}
-
-.item__content {
-  margin: 0 auto;
-
-  p {
-    display: block;
-    margin-bottom: 10px;
-  }
-}
-
-.container {
-  width: auto;
-}
-.tabs {
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.tabs__link {
-  white-space: nowrap;
-  text-align: center;
-  cursor: pointer;
-  transition: color 0.2s ease-in-out, font-weight 0.2s ease-in-out;
-  &:hover {
-    color: $almostDark;
-  }
-}
-
-.tabs__link:focus::after,
-.tabs__link:hover::after,
-.tabs__link--current::after {
-  bottom: -1px;
-  background-color: $red;
-}
-
-.item__title {
-  font-weight: 600;
-}
-
-.tabs__link::after {
-  pointer-events: none;
-}
-
-.item__volume {
-}
-
-.item__brand {
-}
-
-.form__block {
-  position: relative;
-}
-
-.item__price-block {
-  display: block;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  .item__price {
-    position: absolute;
-    display: block;
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 50%;
-    transition: transform 0.2s ease-in-out;
-    &--center {
-      transform: translate(-50%, 50%);
-    }
-  }
-
-  .item__subprice {
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-    text-decoration: line-through;
-    color: $red;
-    opacity: 0.8;
-    width: auto;
-    font-size: 30px;
-  }
-}
-
-.counter__button {
-  border-radius: 50%;
-  border: 2px solid $almostDark;
-}
-
-.item__row {
-  grid-gap: 40px;
-  grid-template-columns: 1fr 1fr;
-
-  .form__legend {
-    margin-bottom: 20px;
-  }
-}
-
-.item__brand-volume {
-  grid-template-columns: auto 120px;
-}
-
-.select-one {
-  pointer-events: none;
-  border: none;
-
-  .select-arrow {
-    display: none;
-  }
-}
-
-.product .button-primary {
-  max-width: 180px;
-}
-
-.pics__link--current {
-  pointer-events: none;
-}
-
-.pics__link {
-  display: block;
-  height: 100%;
-  box-shadow: $almostDark 2px 2px 5px;
-  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out,
-    border 0.2s ease-in-out;
-
-  &:hover {
-    box-shadow: $almostDark 4px 4px 10px;
-    transform: scale(1.05);
-  }
-  img {
-    height: 100% !important;
-  }
-}
-
-.item {
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 520px auto;
-  &__info {
-    height: 100%;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    grid-gap: 30px;
-  }
-
-  .form {
-    height: 100%;
-    display: grid;
-    grid-gap: 30px;
-    grid-template-rows: 20px 1fr 1fr 70px;
-  }
-
-  &__pics {
-    height: 100%;
-  }
-}
-
-.pics__wrapper {
-  height: 100%;
-  grid-row: 1/2;
-  position: relative;
-  transition: background 0.2s ease-in-out;
-  .pics__list {
-    position: absolute;
-    bottom: 0;
-    left: 20px;
-    .pics__link {
-      img {
-        object-fit: cover;
-      }
-
-      height: 100px;
-
-      width: 100px;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background-color: white;
-      overflow: hidden;
-    }
-  }
-}
-
-.brand-list {
-  display: grid;
-  grid-auto-rows: 15px;
-  grid-gap: 5px;
-  margin: 0;
-  &__item {
-    height: 40px;
-    display: flex;
-    align-items: center;
-  }
-}
-
-.item__form {
-  max-width: 400px;
-  margin: 0;
-}
-
-.form .button--primery {
-  width: 100%;
-}
-
-@media (max-width: 800px) {
-  .item {
-    grid-template-columns: 1fr;
-    grid-template-rows: 400px 500px 1fr;
-  }
-
-  .item__form {
-    margin: 0 auto;
-  }
-
-  .item__content {
-    width: auto;
-  }
-
-  // .tabs {
-  //   flex-direction: column;
-  // }
-}
+@import '@/styles/item.scss';
 </style>

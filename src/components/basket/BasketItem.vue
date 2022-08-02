@@ -9,7 +9,7 @@
     <div class="product__pic">
       <img
         v-if="product.images"
-        :src="product.images[0].url"
+        :src="IMAGE_STORE + product.images[0].filename"
         width="120"
         height="120"
         srcset="img/product-square-4@2x.jpg 2x"
@@ -47,7 +47,8 @@
   </li>
 </template>
 <script setup>
-import { defineProps, computed, ref, watch, toRef } from 'vue'
+import { defineProps, computed, ref, watch, toRef, onBeforeUnmount } from 'vue'
+import { IMAGE_STORE } from '@/config'
 import useEditors from '@/hooks/useEditors'
 import useApi from '@/hooks/useApi'
 import BaseCounter from '@/components/small/BaseCounter.vue'
@@ -78,9 +79,8 @@ getProductData(props.item.productId)
   })
   .catch(() => (isDataLoadingFailed.value = true))
 
-setInterval(() => {
+const intervalId = setInterval(() => {
   isDataLoadingFailed.value = false
-
   getProductData(props.item.productId)
     .then((res) => {
       product.value = res
@@ -88,12 +88,15 @@ setInterval(() => {
     .catch(() => (isDataLoadingFailed.value = true))
 }, 100)
 
+onBeforeUnmount(() => clearInterval(intervalId))
+
 watch(
   () => quantity.value,
   (value, oldValue) => {
     isCounterLoading.value = true
     const difference = oldValue - value
     const isAdd = difference < 0
+
     updateBasketItemQuantity({
       itemId: props.item.id,
       quantity: Math.abs(difference),

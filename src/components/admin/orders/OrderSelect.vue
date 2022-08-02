@@ -9,7 +9,7 @@
       'select--open': isSelectOpen
     }"
   >
-    {{ title }}
+    {{ item.title || '' }}
     <div
       class="select-arrow"
       :class="{
@@ -43,9 +43,14 @@
     <div ref="dropBox" class="drop-box">
       <div class="drop-box__body">
         <ul class="drop-box__list">
-          <li class="drop-box__item" v-for="item in items" :key="item.id">
-            <button @click.prevent="select(item)" class="drop-box__button">
-              {{ item.title }}
+          <li
+            class="drop-box__item"
+            v-show="status.id !== item.id"
+            v-for="status in items"
+            :key="status.id"
+          >
+            <button @click.prevent="select(status)" class="drop-box__button">
+              {{ status.title || '' }}
             </button>
           </li>
         </ul>
@@ -54,25 +59,17 @@
   </div>
 </template>
 <script>
-import { defineComponent, ref, computed, watch } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import useEditors from '@/hooks/useEditors'
 export default defineComponent({
-  props: ['items', 'placeholder', 'id'],
-  emits: ['update:id', 'update:title'],
-
+  props: ['items', 'item'],
+  emits: ['update:item', 'submit'],
   setup(props, { emit }) {
     const isSelectHover = ref(false)
     const isSelectOpen = ref(false)
     const selectElement = ref(null)
     const dropBox = ref(null)
     const { editVolumeFormat } = useEditors()
-    const title = computed(() => {
-      const item = props.items.find((item) => item.id === props.id)
-      if (!item) return props.placeholder
-
-      return item.title
-    })
-
     watch(
       () => isSelectOpen.value,
       (value) => {
@@ -97,13 +94,12 @@ export default defineComponent({
     )
 
     const select = (item) => {
-      emit('update:id', item.id)
-      emit('update:title', item.title)
+      emit('update:item', item)
+      emit('submit')
     }
     return {
       select,
       editVolumeFormat,
-      title,
       isSelectHover,
       isSelectOpen,
       selectElement,

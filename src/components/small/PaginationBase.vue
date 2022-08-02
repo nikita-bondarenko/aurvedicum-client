@@ -64,11 +64,25 @@
   <div></div>
 </template>
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, watch } from 'vue'
 
 export default defineComponent({
   props: ['pagination', 'config'],
-  emits: ['update:config']
+  emits: ['update:config'],
+  setup(props, { emit }) {
+    watch(
+      () => props.pagination,
+      (value) => {
+        if (value.pages < value.page) {
+          emit(
+            'update:config',
+            Object.assign({}, props.pagination, { page: value.pages })
+          )
+        }
+      },
+      { deep: true }
+    )
+  }
 })
 </script>
 <style lang="scss">

@@ -1,14 +1,33 @@
 <template>
-  <AdminForm
+  <div class="content__top">
+    <ul class="breadcrumbs">
+      <li class="breadcrumbs__item">
+        <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
+          Меню
+        </router-link>
+      </li>
+      <li class="breadcrumbs__item">
+        <router-link :to="{ name: 'adminProducts' }" class="breadcrumbs__link">
+          Товары
+        </router-link>
+      </li>
+
+      <li class="breadcrumbs__item">
+        <span class="breadcrumbs__link" disabled> Добавление товара </span>
+      </li>
+    </ul>
+  </div>
+
+  <ItemForm
     :text="'добавить товар'"
     v-model:data="data"
     @submit="create"
     :formError="error"
   >
-  </AdminForm>
+  </ItemForm>
 </template>
 <script setup>
-import AdminForm from './AdminForm.vue'
+import ItemForm from '@/components/admin/products/ItemForm.vue'
 import { ref, watch } from 'vue'
 import useApi from '@/hooks/useApi'
 import router from '@/router'
@@ -42,7 +61,6 @@ const create = () => {
       item.content = item.content.filter((item) => !!item.paragraph)
     })
   }
-  console.log(body)
   fetch('post', 'api/products', body, 'CreateLoading')
     .then(() => {
       localStorage.removeItem('createData')
@@ -61,7 +79,6 @@ watch(
   () => data.value,
   (value) => {
     localStorage.setItem('createData', JSON.stringify(value))
-    console.log(value)
   },
   { deep: true, immediate: true }
 )

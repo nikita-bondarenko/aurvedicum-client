@@ -14,55 +14,39 @@ import BaseFooter from './components/BaseFooter.vue'
 
 @import '@/styles/style.scss';
 
-// @font-face {
-//   font-display: swap;
-//   font-weight: 300;
-//   font-family: 'Geometria';
-//   font-style: normal;
-//   src: url(./fonts/Geometria-Light.woff2) format('woff2');
-// }
-// @font-face {
-//   font-display: swap;
-//   font-weight: 400;
-//   font-family: 'Geometria';
-//   font-style: normal;
-//   src: url(./fonts/Geometria-Regular.woff2) format('woff2');
-// }
-// @font-face {
-//   font-display: swap;
-//   font-weight: 500;
-//   font-family: 'Geometria';
-//   font-style: normal;
-//   src: url(./fonts/Geometria-Medium.woff2) format('woff2');
-// }
-// @font-face {
-//   font-display: swap;
-//   font-weight: 700;
-//   font-family: 'Geometria';
-//   font-style: normal;
-//   src: url(./fonts/Geometria-Bold.woff2) format('woff2');
-// }
-// @font-face {
-//   font-display: swap;
-//   font-weight: 900;
-//   font-family: 'Geometria';
-//   font-style: normal;
-//   src: url(./fonts/Geometria-ExtraBold.woff2) format('woff2');
-// }
-// @font-face {
-//   font-display: swap;
-//   font-weight: 400;
-//   font-family: 'Circe';
-//   font-style: normal;
-//   src: url(./fonts/Circe-Regular.woff2) format('woff2');
-// }
-// @font-face {
-//   font-display: swap;
-//   font-weight: 700;
-//   font-family: 'Circe';
-//   font-style: normal;
-//   src: url(./fonts/Circe-Bold.woff2) format('woff2');
-// }
+.settings {
+  border-right: 1px solid $grey;
+}
+
+.form__legend {
+  color: #c73f03;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+.options__radio:checked ~ .options__value {
+  background-color: $red;
+  color: #fff;
+}
+
+.options__label:hover .options__value {
+  background-color: lighten($red, 30%);
+}
+
+.form__legend {
+  @include fontCondenced;
+}
+
+.item__title,
+.content__title {
+  margin: 0;
+}
+
+.order {
+  &__comment textarea {
+    padding-top: 30px;
+  }
+}
 
 *,
 ::after,
@@ -116,6 +100,7 @@ import BaseFooter from './components/BaseFooter.vue'
   padding-left: 50px;
   padding-right: 50px;
   max-width: 1400px;
+  width: auto;
 }
 
 img {
@@ -123,9 +108,9 @@ img {
   height: 100% !important;
 }
 
-.container {
-  width: auto;
-  max-width: 1200px;
+.content__top {
+  display: grid;
+  grid-gap: 15px;
 }
 
 .footer__data {
@@ -136,17 +121,12 @@ img {
   }
 }
 
-.button--primery {
-  background-color: $red;
-}
-
 .footer__link:focus,
 .footer__link:hover {
   border-color: $red;
 }
 
 .filter__button-wrapper {
-  margin-top: 20px;
   display: none;
 }
 
@@ -190,6 +170,10 @@ img {
 }
 
 @media (max-width: 740px) {
+  .settings {
+    border-right: 0px solid $grey;
+  }
+
   .header__wrapper {
     grid-column-gap: 20px;
   }
@@ -217,7 +201,9 @@ img {
   }
 
   .filter__button-wrapper {
-    display: block;
+    display: flex;
+    align-items: center;
+    margin-bottom: 50px;
   }
 
   .filter__form {
@@ -233,7 +219,7 @@ img {
       transition: transform 1s ease-in-out;
     }
     &--open {
-      height: 555px;
+      height: 470px;
       .form {
         transform: translateY(0);
       }

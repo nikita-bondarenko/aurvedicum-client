@@ -3,13 +3,13 @@
   <ul v-else class="catalog__list">
     <li class="catalog__item" v-for="item in items" :key="item.id">
       <router-link
-        :to="{ name: 'item', params: { id: item.id } }"
+        :to="{ name: isAdmin ? 'adminItem' : 'item', params: { id: item.id } }"
         class="catalog__pic"
         href="#"
       >
         <img
           v-show="item.images.length"
-          :src="item.images[0].url"
+          :src="IMAGE_STORE + item.images[0].filename"
           alt="Название товара"
         />
       </router-link>
@@ -30,7 +30,7 @@
             {{ editNumberFormat(volume.price) }}&nbsp;₽
           </p>
           <p v-if="volume.subprice" class="volume__subprice volume__item">
-            {{ editNumberFormat(volume.subprice[0].value) }}&nbsp;₽
+            {{ editNumberFormat(volume.subprice) }}&nbsp;₽
           </p>
           <p class="volume__value volume__item">
             {{ editVolumeFormat(volume.volume) }}
@@ -45,9 +45,7 @@
           :class="{ 'subprice__empty-item': !volume.subprice }"
         >
           <div v-if="volume.subprice" class="subprice__item">
-            {{
-              Math.round(100 - (volume.price * 100) / volume.subprice[0].value)
-            }}%
+            {{ Math.round(100 - (volume.price * 100) / volume.subprice) }}%
           </div>
         </li>
       </ul>
@@ -57,9 +55,10 @@
 <script setup>
 /* eslint-disable  no-unused-vars */
 import { defineProps } from 'vue'
+import { IMAGE_STORE } from '@/config'
 import useEditors from '@/hooks/useEditors'
 const { editNumberFormat, editVolumeFormat } = useEditors()
-const props = defineProps(['items'])
+const props = defineProps(['items', 'isAdmin'])
 </script>
 <style lang="scss">
 @import '@/styles/style.scss';
@@ -81,7 +80,7 @@ const props = defineProps(['items'])
   grid-gap: 0 10px;
 
   &__item {
-    background: red;
+    background: $hover;
     color: white;
     display: flex;
     align-items: center;
@@ -120,7 +119,7 @@ const props = defineProps(['items'])
     &__subprice {
       grid-row: 3/4;
       font-size: 12px;
-      color: $red;
+      color: $hover;
       text-decoration: line-through;
     }
     &__value {

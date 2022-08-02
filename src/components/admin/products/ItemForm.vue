@@ -106,7 +106,7 @@
         <li v-for="item in formData.images" :key="item.id">
           <img
             v-if="item.filename"
-            :src="IMAGE__STORE + item.filename"
+            :src="'../../uploads/' + item.filename"
             alt="Изображение товара"
           />
         </li>
@@ -176,19 +176,20 @@
   </form>
 </template>
 <script setup>
-/* eslint-disable space-before-function-paren  */
-import FormNumberInput from '../form/FormNumberInput.vue'
-import FormInput from '../form/FormInput.vue'
-import FormTextarea from '../form/FormTextarea.vue'
-import AdminFormList from './AdminFormList.vue'
+// /* eslint-disable space-before-function-paren  */
+import FormNumberInput from '@/components/form/FormNumberInput.vue'
+import FormInput from '@/components/form/FormInput.vue'
+import FormTextarea from '@/components/form/FormTextarea.vue'
+import AdminFormList from '@/components/admin/AdminFormList.vue'
 import useApi from '@/hooks/useApi'
 import { computed, ref, defineProps, defineEmits } from 'vue'
 import { store } from '@/store/store'
-import { IMAGE__STORE } from '@/config'
-import AdminFormListItem from './AdminFormListItem.vue'
-import AdminSelect from './AdminSelect.vue'
-import FormFileInput from '../form/FormFileInput.vue'
-import FormSelectInput from '../form/FormSelectInput.vue'
+import { IMAGE__STORE } from '@/components/../config'
+import AdminFormListItem from '@/components/admin/AdminFormListItem.vue'
+import AdminSelect from '@/components/admin/AdminSelect.vue'
+import FormFileInput from '@/components/form/FormFileInput.vue'
+import FormSelectInput from '@/components/form/FormSelectInput.vue'
+console.log(IMAGE__STORE)
 const props = defineProps(['data', 'text', 'formError'])
 const emit = defineEmits(['update:data', 'submit'])
 const { getBrands, getCategories } = useApi()

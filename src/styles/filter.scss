@@ -1,0 +1,19 @@
+@import '@/styles/style.scss';
+
+.filter {
+    &__reset {
+        width: 100%;
+        font-size: 20px;
+    }
+
+    .button-error {
+        pointer-events: none;
+        background-color: black;
+    }
+
+    &__form {
+        padding-bottom: 0px;
+    }
+
+
+}

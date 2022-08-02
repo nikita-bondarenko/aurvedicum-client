@@ -1,25 +1,71 @@
 <template>
   <main class="content container">
     <div class="content__top">
-      <ul class="breadcrumbs">
+      <ul v-if="isAdmin" class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <router-link :to="{ name: 'catalog' }" class="breadcrumbs__link">
+          <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
+            Меню
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminOrders' }" class="breadcrumbs__link">
+            Заказы
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link
+            :to="{ name: 'adminOrderAdd' }"
+            class="breadcrumbs__link"
+          >
+            Оформление заказа
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <span class="breadcrumbs__link"> Корзина </span>
+        </li>
+      </ul>
+
+      <ul v-if="store.isOrderedBasket" class="breadcrumbs">
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
+            Меню
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminOrders' }" class="breadcrumbs__link">
+            Заказы
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="store.page" class="breadcrumbs__link">
+            Изменение заказа
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <span class="breadcrumbs__link"> Корзина </span>
+        </li>
+      </ul>
+
+      <ul v-else class="breadcrumbs">
+        <li class="breadcrumbs__item">
+          <router-link
+            :to="{ name: 'catalog' }"
+            @click="store.setCatalogPathName"
+            class="breadcrumbs__link"
+          >
             Каталог
           </router-link>
         </li>
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link"> Корзина </a>
+          <span class="breadcrumbs__link"> Корзина </span>
         </li>
       </ul>
-      <div class="content__row">
-        <h1 class="content__title">Корзина</h1>
-        <span class="content__info">В корзине {{ total.toLowerCase() }} </span>
-      </div>
+
+      <span class="content__info">В корзине {{ total.toLowerCase() }} </span>
     </div>
     <BaseSpinner v-if="isBasketLoading && !isBasketLoadingFailed"></BaseSpinner>
     <div v-else-if="isBasketLoadingFailed" class="failed-loading">
-      Не удалось загрузить информацию о корзине, попробуйте перезагрузить
-      страницу.
+      Не удалось загрузить информацию, попробуйте перезагрузить страницу.
     </div>
 
     <section v-else class="cart">
@@ -28,6 +74,13 @@
       </p>
       <form v-else class="cart__form form" action="#" method="POST">
         <div class="cart__field">
+          <router-link
+            v-if="store.isOrderedBasket"
+            :to="{ name: 'catalog' }"
+            @click="store.setCatalogPathName"
+            class="button button--second cart__catalog-link"
+            >Добавить товар из каталога</router-link
+          >
           <ul class="cart__list">
             <BasketItem
               v-for="item in basketItems"
@@ -49,13 +102,21 @@
           <p class="cart__price">
             Итого: <span>{{ totalPrice }} &nbsp;₽</span>
           </p>
-
           <router-link
-            :to="{ name: 'order' }"
+            v-if="store.isOrderedBasket"
+            :to="store.page"
             v-show="isEmpty"
             class="cart__button button button--primery"
           >
-            Оформить заказ
+            Перейти к заказу
+          </router-link>
+
+          <router-link
+            v-else
+            :to="{ name: isAdmin ? 'adminOrderAdd' : 'order' }"
+            v-show="isEmpty"
+            class="cart__button button button--primery"
+            >Оформить заказ
           </router-link>
         </div>
       </form>
@@ -69,12 +130,16 @@ import BasketItem from '@/components/basket/BasketItem.vue'
 import BaseSpinner from '@/components/small/BaseSpinner.vue'
 import PaginationBase from '@/components/small/PaginationBase.vue'
 import { store } from '@/store/store'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: { BasketItem, BaseSpinner, PaginationBase },
   setup() {
+    const isAdmin = computed(() => {
+      if (!useRoute().name) return false
+      return useRoute().name === 'adminBasket'
+    })
     const { pluralizeProductAmount, editNumberFormat } = useEditors()
-
     const {
       basketItemsQuantity,
       basketTotalPrice,
@@ -105,6 +170,7 @@ export default defineComponent({
       return editNumberFormat(basketTotalPrice.value)
     })
     return {
+      isAdmin,
       config,
       basketPagination,
       store,
@@ -119,7 +185,12 @@ export default defineComponent({
 })
 </script>
 <style lang="scss">
-.button--primery {
+@import '@/styles/style.scss';
+.cart__catalog-link {
+  margin-bottom: 40px;
+}
+
+.cart__button {
   display: block;
   text-align: center;
 }
@@ -137,7 +208,7 @@ export default defineComponent({
 
   &:hover {
     svg path {
-      stroke: black;
+      stroke: $hover;
     }
   }
 }

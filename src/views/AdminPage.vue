@@ -1,47 +1,7 @@
 <template>
   <div class="container content">
-    <div v-if="store.isAuth" class="data-base">
-      <nav class="content__top">
-        <h1 class="content__title">База данных</h1>
-
-        <ul class="breadcrumbs breadcrumbs--admin">
-          <li class="breadcrumbs__item">
-            <router-link
-              class="breadcrumbs__link"
-              :to="{ name: 'adminProducts' }"
-              >Товары
-            </router-link>
-          </li>
-          <li class="breadcrumbs__item">
-            <router-link class="breadcrumbs__link" :to="{ name: 'adminOrders' }"
-              >Заказы
-            </router-link>
-          </li>
-          <li class="breadcrumbs__item">
-            <router-link
-              class="breadcrumbs__link"
-              :to="{ name: 'adminContacts' }"
-              >Контакты
-            </router-link>
-          </li>
-          <li class="breadcrumbs__item">
-            <router-link
-              class="breadcrumbs__link"
-              :to="{ name: 'adminPolitics' }"
-              >Политика конф.
-            </router-link>
-          </li>
-        </ul>
-      </nav>
-      <div class="content__right">
-        <router-link
-          v-if="route.name === 'adminProducts'"
-          :to="{ name: 'adminAddProduct' }"
-          class="data-base__add-button"
-          >Добавить товар</router-link
-        >
-      </div>
-      <router-view></router-view>
+    <div v-if="store.isAuth">
+      <router-view> </router-view>
     </div>
 
     <div v-else class="auth">
@@ -75,11 +35,9 @@
 import { reactive, watch } from 'vue'
 import FormInput from '@/components/form/FormInput.vue'
 import AdminFormPassword from '@/components/admin/AdminFormPassword.vue'
-import { useRouter, useRoute } from 'vue-router'
 import useApi from '@/hooks/useApi'
 import { store } from '@/store/store'
-const route = useRoute()
-const router = useRouter()
+import { useRouter } from 'vue-router'
 const formData = reactive({})
 const { fetch } = useApi()
 const tryLog = () => {
@@ -88,20 +46,22 @@ const tryLog = () => {
     localStorage.setItem('sessionId', res.data.sessionId)
   })
 }
-router.push({ name: store.adminPage })
-
+const router = useRouter()
+const go = () => {
+  if (store.isAuth) router.push(store.page)
+}
+go()
 watch(
   () => store.isAuth,
-  (value) => {
-    if (value === true) {
-      router.push({ name: store.adminPage })
-    }
-  },
-  { immediate: true }
+  () => {
+    go()
+  }
 )
 </script>
 <style lang="scss">
 @import '@/styles/style.scss';
+@import '@/styles/data.scss';
+
 .data-base__item:not(:last-child) {
   border-bottom: 1px solid $grey;
   padding-bottom: 20px;
@@ -122,17 +82,6 @@ watch(
   &__error {
     margin-top: 30px;
   }
-}
-
-.content__top {
-  display: flex;
-  flex-direction: column;
-  margin-right: auto;
-  width: fit-content;
-}
-
-.router-link-active {
-  color: black;
 }
 
 @media (max-width: 465px) {
@@ -205,13 +154,6 @@ $ml: 20px;
     &--admin {
       border-bottom: 1px solid $grey;
     }
-  }
-
-  .select {
-    height: 65px;
-    padding-right: 45px;
-    width: fit-content;
-    min-width: 250px;
   }
 
   &__button-group {
@@ -295,26 +237,6 @@ $ml: 20px;
 }
 
 .data-base {
-  &__button-add {
-    @include button;
-    @include smallFont;
-    padding: 0;
-    margin-left: $ml;
-
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-  }
-
-  &__button-del {
-    position: absolute;
-    top: 1px;
-    right: -42px;
-  }
-  &__title {
-    margin-left: $ml;
-  }
 }
 
 .description {
@@ -351,10 +273,6 @@ $ml: 20px;
     &__label {
       width: calc(100% - 40px);
     }
-  }
-  .data-base__button-del {
-    top: 0;
-    right: 0;
   }
 }
 

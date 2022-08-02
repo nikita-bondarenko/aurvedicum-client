@@ -1,19 +1,62 @@
 <template>
   <main class="content container">
-    <div class="content__top">
-      <div class="content__row">
-        <h1 class="content__title">Каталог</h1>
-        <span class="content__info">
-          {{ pluralizeProductAmount(pagination.total) }}
-        </span>
-      </div>
+    <div v-if="store.isOrderedBasket" class="content__top">
+      <ul class="breadcrumbs">
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
+            Меню
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminOrders' }" class="breadcrumbs__link">
+            Заказы
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="store.page" class="breadcrumbs__link">
+            Изменение заказа
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <span class="breadcrumbs__link"> Каталог </span>
+        </li>
+      </ul>
+    </div>
+    <div v-if="isAdmin" class="content__top">
+      <ul class="breadcrumbs">
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
+            Меню
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminOrders' }" class="breadcrumbs__link">
+            Заказы
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link
+            :to="{ name: 'adminOrderAdd' }"
+            class="breadcrumbs__link"
+          >
+            Оформление заказа
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <span class="breadcrumbs__link"> Каталог </span>
+        </li>
+      </ul>
     </div>
 
     <div class="content__catalog">
-      <BaseFilter @submit="getData" v-model:settings="config"></BaseFilter>
-      <section class="catalog">
+      <section class="settings">
+        <BaseSearch v-model="searchValue"></BaseSearch>
+        <BaseFilter v-model:settings="config"></BaseFilter>
+      </section>
+
+      <section id="catalog" class="catalog">
         <BaseSpinner v-if="isLoading"></BaseSpinner>
-        <CatalogItems v-else :items="items"></CatalogItems>
+        <CatalogItems :is-admin="isAdmin" v-else :items="items"></CatalogItems>
         <PaginationBase
           v-if="pagination.pages > 1"
           class="catalog__pagination"
@@ -25,18 +68,24 @@
   </main>
 </template>
 <script setup>
-/* eslint-disable */
 import BaseFilter from '@/components/BaseFilter.vue'
 import CatalogItems from '@/components/catalog/CatalogItems.vue'
 import PaginationBase from '@/components/small/PaginationBase.vue'
 import useApi from '@/hooks/useApi'
 import { ref, watch, computed } from 'vue'
 import BaseSpinner from '../components/small/BaseSpinner.vue'
-import useEditors from '@/hooks/useEditors'
-import { useRoute } from 'vue-router'
-const categoryId = useRoute().params.categoryId || ''
+import { useRoute, useRouter } from 'vue-router'
+import BaseSearch from '@/components/BaseSearch.vue'
+import { store } from '@/store/store'
+if (localStorage.getItem('pathname')) {
+  useRouter().push(localStorage.getItem('pathname'))
+}
 
-const { pluralizeProductAmount } = useEditors()
+const isAdmin = computed(() => {
+  if (!useRoute().name) return false
+  return useRoute().name === 'adminCatalog'
+})
+const categoryId = useRoute().params.categoryId || ''
 const { getProducts } = useApi()
 const isLoading = ref(true)
 const isLoadingFailed = ref(false)
@@ -65,72 +114,22 @@ const getData = async (obj = {}) => {
 }
 getData()
 watch(
-  () => config.value.page,
+  () => config.value,
   () => {
+    searchValue.value = config.value.name
+
     getData()
   },
   { deep: true }
 )
 
-const searchValue = computed({
-  get() {
-    return ''
-  },
-  set(value) {
-    config.value.name = value
-  }
-})
+const searchValue = ref(null)
 
-const configUpdated = computed({
-  get() {
-    return config.value
-  },
-  set(value) {
-    Object.assign(config.value, value)
-  }
-})
+watch(
+  () => searchValue.value,
+  (value) => (config.value.name = value)
+)
 </script>
 <style lang="scss">
 @import '@/styles/style.scss';
-
-.search {
-  position: relative;
-
-  .form__input {
-    padding-top: 13px;
-    padding-right: 65px;
-  }
-
-  &__button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 65px;
-    height: 100%;
-    background: none;
-    border: none;
-    padding: 20px;
-    margin: 0;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-
-    svg path {
-      fill: $light;
-      transition: fill 0.2s ease-in-out;
-    }
-
-    &:hover {
-      background-color: $light;
-
-      svg path {
-        fill: white;
-      }
-    }
-  }
-}
-
-.filter__reset {
-  width: 100%;
-  font-size: 12px;
-}
 </style>

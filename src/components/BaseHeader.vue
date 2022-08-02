@@ -7,18 +7,22 @@
         >{{ pageTitle }}</span
       >
 
-      <a class="header__logo" href="#">
+      <router-link
+        to="/"
+        @click="store.setCatalogPathName"
+        class="header__logo"
+        href="#"
+      >
         <img
           src="@/../public/img/logo.png"
           alt="Логотип интернет-магазина Aurvedicum"
         />
-      </a>
+      </router-link>
 
       <a
         v-if="!route.path.split('/').includes('admin') && !store.isAuth"
         class="header__tel"
       >
-        Контакты
       </a>
       <div class="header__admin" v-if="store.isAuth">
         <button @click.prevent="logout">
@@ -49,6 +53,7 @@
         <span>Админ</span>
       </div>
       <router-link
+        v-if="!route.path.split('/').includes('admin')"
         :to="{ name: 'basket' }"
         class="header__cart"
         :class="{ 'spinner-small': basketCounterLoading }"
@@ -102,6 +107,9 @@ const pageTitle = computed(() => {
 })
 
 const logout = () => {
+  localStorage.removeItem('orderedBasketId')
+  localStorage.setItem('userAccessKey', '')
+  store.clearBasketData()
   fetchWithParams('get', 'admin/logout', {
     sessionId: localStorage.getItem('sessionId')
   })
@@ -122,22 +130,21 @@ watch(
   },
   { deep: true }
 )
+
 getBasket(basketPaginationConfig.value)
+store.getBasketStatus()
 
 watch(
   () => route.name,
   (value) => {
-    if (value === 'orderInfo') getBasket(basketPaginationConfig.value)
-  }
-)
-
-watch(
-  () => route.path,
-  (value) => {
-    const arr = value.split('/').filter((item) => item.length > 0)
-    if (arr[arr.length - 2] === 'admin' || arr[arr.length - 3] === 'admin') {
-      store.updateProp('adminPage', route.name)
+    store.getBasketStatus()
+    if (value !== 'admin' && value.includes('admin')) {
+      store.updateWithStorage('page', {
+        name: route.name,
+        params: { id: route.params.id }
+      })
     }
+    if (value === 'orderInfo') getBasket(basketPaginationConfig.value)
   }
 )
 </script>

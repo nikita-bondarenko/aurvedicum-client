@@ -12,12 +12,10 @@ const jsonHeader = {
   'Content-Type': 'application/json',
   Accept: '*/*'
 }
-let userAccessKey = localStorage.getItem('userAccessKey') || null
-
+const userAccessKey = () => localStorage.getItem('userAccessKey')
 const setAccessKey = (key) => {
   if (key) {
-    userAccessKey = key
-    localStorage.setItem('userAccessKey', userAccessKey)
+    localStorage.setItem('userAccessKey', key)
   }
 }
 
@@ -116,10 +114,10 @@ export default function () {
     store.updateProp('basketCounterLoading', true)
 
     const res = await axios.post(`${API_URL}/api/basket`,
-      Object.assign(body, { basketId: userAccessKey }, store.basketPaginationConfig),
+      Object.assign(body, { basketId: userAccessKey() }, store.basketPaginationConfig),
       {
         params: {
-          userAccessKey
+          userAccessKey: userAccessKey()
         }
       },
       jsonHeader
@@ -141,7 +139,7 @@ export default function () {
         {
           params: {
             ...paginationConfig,
-            userAccessKey
+            userAccessKey: userAccessKey()
           }
         },
         jsonHeader
@@ -173,7 +171,7 @@ export default function () {
     store.updateProp('basketCounterLoading', true)
 
     const res = await axios.patch(`${API_URL}/api/basket`,
-      Object.assign(body, { basketId: userAccessKey }, store.basketPaginationConfig),
+      Object.assign(body, { basketId: userAccessKey() }, store.basketPaginationConfig),
       jsonHeader
     )
     if (res.data) {
@@ -188,7 +186,7 @@ export default function () {
   const deleteBasketItem = async (body) => {
     store.updateProp('basketCounterLoading', true)
     const res = await axios.delete(`${API_URL}/api/basket`,
-      { params: Object.assign(body, { basketId: userAccessKey }, store.basketPaginationConfig) }
+      { params: Object.assign(body, { basketId: userAccessKey() }, store.basketPaginationConfig) }
       ,
       jsonHeader
     )
@@ -209,7 +207,7 @@ export default function () {
 
   const postOrder = async (body) => {
     return axios.post(`${API_URL}/api/order`,
-      { ...body, basketId: userAccessKey, basketPrice: store.basketTotalPrice },
+      { ...body, basketId: userAccessKey(), basketPrice: store.basketTotalPrice },
       jsonHeader)
   }
 

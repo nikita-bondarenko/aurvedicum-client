@@ -8,7 +8,7 @@
       </p>
 
       <ul class="footer__data">
-        <li>
+        <!-- <li>
           <a
             class="footer__link"
             href="#"
@@ -18,18 +18,19 @@
           >
             Политика конфиденциальности
           </a>
-        </li>
+        </li> -->
         <li>
           <router-link
-            v-if="!route.path.split('/').includes('admin')"
+            v-if="isAdmin"
             class="footer__link"
-            :to="{ name: 'admin' }"
+            @click="goOut"
+            :to="{ name: 'catalog' }"
           >
-            Я администратор
+            Вернуться к каталогу
           </router-link>
 
-          <router-link v-else class="footer__link" :to="{ name: 'catalog' }">
-            Вернуться к каталогу
+          <router-link v-else class="footer__link" :to="{ name: 'admin' }">
+            Я администратор
           </router-link>
         </li>
       </ul>
@@ -39,6 +40,30 @@
   </footer>
 </template>
 <script setup>
+import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { store } from '@/store/store'
 const route = useRoute()
+const isAdmin = computed(() => {
+  if (!route.name) return false
+  return route.name.includes('admin') || store.isOrderedBasket
+})
+watch(
+  () => route.name,
+  () => {
+    if (store.pathDeleteTimerId) clearTimeout(store.pathDeleteTimerId)
+    setTimeout(() => localStorage.setItem('pathname', location.pathname), 200)
+
+    const timerId = setTimeout(
+      () => localStorage.removeItem('pathname'),
+      1000 * 60 * 60
+    )
+    store.updateProp('pathDeleteTimerId', timerId)
+  }
+)
+const goOut = () => {
+  localStorage.setItem('userAccessKey', '')
+  store.setCatalogPathName()
+  store.clearBasketData()
+}
 </script>

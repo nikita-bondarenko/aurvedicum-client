@@ -1,3 +1,82 @@
+@import '@/styles/style.scss';
+
+
+.cart__change-button {
+    margin-top: 0;
+}
+
+.order {
+    &__body {
+        position: relative;
+        display: grid;
+        grid-gap: 10px 20px;
+        grid-template-columns: auto 200px;
+
+        align-items: center;
+        padding-right: 10px;
+    }
+
+    &__phone,
+    &__address {
+        color: $placeholder;
+    }
+
+    &__changed,
+    &__created,
+    &__change-button {
+        grid-column: 2/3 !important;
+        text-align: end;
+    }
+
+    &__name {
+        margin: 0;
+    }
+
+    &__name,
+    &__phone,
+    &__address,
+    &__select {
+        grid-column: 1/2;
+        margin-bottom: 0;
+    }
+
+    &__name {
+        grid-row: 1/2;
+    }
+
+    &__phone,
+    &__changed {
+        grid-row: 2/3;
+    }
+
+    &__address,
+    &__created {
+        grid-row: 3/4;
+    }
+
+    &__change-button,
+    &__select {
+        grid-row: 4/5;
+    }
+
+    &__change-button {
+        width: fit-content;
+        height: fit-content;
+        justify-self: flex-end;
+        align-self: flex-start;
+    }
+
+    &__select {
+        max-width: 180px;
+        margin-left: -20px;
+    }
+
+    &__button-del {
+        top: -8px !important;
+        right: -30px !important;
+    }
+}
+
 .options__value b {
     white-space: nowrap;
 }

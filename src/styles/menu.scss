@@ -1,0 +1,34 @@
+@import '@/styles/style.scss';
+
+.menu {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+
+    &__title {
+        font-family: 'FuturaNormal';
+        font-size: 40px;
+        margin-top: 0;
+        text-align: center;
+    }
+
+    &__list {
+        display: grid;
+        grid-gap: 20px;
+    }
+
+    &__item {
+        text-align: center
+    }
+
+    &__link {
+        @include fontCondenced;
+        color: $red ;
+        font-size: 25px;
+        transition: color .2s ease-out;
+
+        &:hover {
+            color: lighten($red, 30%);
+        }
+    }
+}

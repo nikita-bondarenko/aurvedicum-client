@@ -1,9 +1,29 @@
 <template>
   <main class="content container">
     <div class="content__top">
-      <ul class="breadcrumbs">
+      <ul v-if="route.name === 'adminOrderInfo'" class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <router-link :to="{ name: 'catalog' }" class="breadcrumbs__link">
+          <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
+            Меню
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <router-link :to="{ name: 'adminOrders' }" class="breadcrumbs__link">
+            Заказы
+          </router-link>
+        </li>
+        <li class="breadcrumbs__item">
+          <span class="breadcrumbs__link"> Информация о заказе </span>
+        </li>
+      </ul>
+
+      <ul v-else class="breadcrumbs">
+        <li class="breadcrumbs__item">
+          <router-link
+            @click="store.setCatalogPathName"
+            :to="{ name: 'catalog' }"
+            class="breadcrumbs__link"
+          >
             Каталог
           </router-link>
         </li>
@@ -17,7 +37,11 @@
         </li>
       </ul>
 
-      <h1 class="content__title">Заказ оформлен</h1>
+      <h1 v-if="route.name === 'adminOrderInfo'" class="content__title">
+        Заказ изменен
+      </h1>
+
+      <h1 v-else class="content__title">Заказ оформлен</h1>
     </div>
 
     <section class="cart">
@@ -32,7 +56,7 @@
         method="POST"
       >
         <div class="cart__field">
-          <p class="cart__message">
+          <p v-if="!route.name === 'adminOrderInfo'" class="cart__message">
             Благодарим за&nbsp;выбор нашего магазина. Наши менеджеры свяжутся
             с&nbsp;Вами в&nbsp;течение одного рабочего дня для уточнения деталей
             доставки.
@@ -101,7 +125,8 @@
 </template>
 <script setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { store } from '@/store/store'
 import useApi from '@/hooks/useApi'
 import BaseSpinner from '@/components/small/BaseSpinner.vue'
 import PaginationBase from '@/components/small/PaginationBase.vue'
@@ -111,8 +136,13 @@ const { deliveryPriceText, pluralizeProductAmount, editNumberFormat } =
   useEditors()
 const { getOrder } = useApi()
 const router = useRouter()
+const route = useRoute()
 const orderId = localStorage.getItem('orderId')
-if (!orderId) router.push({ name: 'catalog' })
+if (!orderId) {
+  router.push({ name: 'catalog' })
+  store.setCatalogPathName()
+}
+
 const isLoading = ref(true)
 const isLoadingFailed = ref(false)
 const orderData = ref({})
