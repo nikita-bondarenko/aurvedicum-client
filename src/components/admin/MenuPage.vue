@@ -13,7 +13,7 @@
           >Заказы
         </router-link>
       </li>
-      <!-- <li class="menu__item">
+      <li class="menu__item">
         <router-link class="menu__link" :to="{ name: 'adminContacts' }"
           >Контакты
         </router-link>
@@ -22,7 +22,7 @@
         <router-link class="menu__link" :to="{ name: 'adminPolitics' }"
           >Политика конф.
         </router-link>
-      </li> -->
+      </li>
     </ul>
     <router-link
       v-if="route.name === 'adminProducts'"

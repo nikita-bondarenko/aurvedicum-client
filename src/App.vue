@@ -13,6 +13,37 @@ import BaseFooter from './components/BaseFooter.vue'
 @import '@/../public/css/style.min.css';
 
 @import '@/styles/style.scss';
+@mixin back {
+  position: fixed;
+  content: '';
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+body::before {
+  z-index: -2;
+
+  @include back;
+  background: no-repeat center / cover url('../public/img/back.jpg');
+  transform: rotate(180deg);
+}
+
+body::after {
+  z-index: -1;
+  @include back;
+  background: rgba($color: #000000, $alpha: 0.6);
+}
+
+.header,
+.footer {
+  color: $w !important;
+}
+
+.content {
+  background: $w;
+}
 
 .settings {
   border-right: 1px solid $grey;
@@ -204,6 +235,7 @@ img {
     display: flex;
     align-items: center;
     margin-bottom: 50px;
+    margin-left: 25px;
   }
 
   .filter__form {
@@ -283,9 +315,31 @@ img {
   }
 }
 
-@media (max-width: 350px) {
+@media (max-width: 380px) {
   .item {
-    grid-template-rows: 400px 700px 1fr !important;
+    grid-template-rows:
+      330px 490px
+      1fr !important;
+    &__row {
+      grid-gap: 20px 10px !important;
+    }
+    &__price {
+      font-size: 20px !important;
+    }
+    &__subprice {
+      font-size: 16px !important;
+    }
+    &__title {
+      line-height: 1.2;
+    }
+  }
+
+  .tabs__item:not(:last-child) {
+    margin: 0;
+  }
+
+  .tabs__link {
+    padding: 10px;
   }
 
   // .item__row {
@@ -293,6 +347,24 @@ img {
   // }
   .form__counter {
     margin: auto;
+    width: 130px;
+    input {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .catalog__list {
+    grid-gap: 20px 10px;
+  }
+
+  .footer__wrapper {
+    padding-top: 20px;
   }
 }
 </style>

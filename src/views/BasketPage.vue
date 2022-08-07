@@ -48,11 +48,7 @@
 
       <ul v-else class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <router-link
-            :to="{ name: 'catalog' }"
-            @click="store.setCatalogPathName"
-            class="breadcrumbs__link"
-          >
+          <router-link :to="{ name: 'catalog' }" class="breadcrumbs__link">
             Каталог
           </router-link>
         </li>

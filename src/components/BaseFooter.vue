@@ -40,7 +40,7 @@
   </footer>
 </template>
 <script setup>
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { store } from '@/store/store'
 const route = useRoute()
@@ -48,22 +48,19 @@ const isAdmin = computed(() => {
   if (!route.name) return false
   return route.name.includes('admin') || store.isOrderedBasket
 })
-watch(
-  () => route.name,
-  () => {
-    if (store.pathDeleteTimerId) clearTimeout(store.pathDeleteTimerId)
-    setTimeout(() => localStorage.setItem('pathname', location.pathname), 200)
 
-    const timerId = setTimeout(
-      () => localStorage.removeItem('pathname'),
-      1000 * 60 * 60
-    )
-    store.updateProp('pathDeleteTimerId', timerId)
-  }
-)
 const goOut = () => {
   localStorage.setItem('userAccessKey', '')
-  store.setCatalogPathName()
   store.clearBasketData()
 }
 </script>
+<style lang="scss">
+@import '@/styles/style.scss';
+.footer__wrapper {
+  min-height: 340px !important;
+}
+
+.footer__link {
+  color: $w;
+}
+</style>

@@ -41,7 +41,7 @@ import { useRouter } from 'vue-router'
 const formData = reactive({})
 const { fetch } = useApi()
 const tryLog = () => {
-  fetch('post', 'admin/login', formData).then((res) => {
+  fetch('post', 'api/admin/login', formData).then((res) => {
     store.updateProp('isAuth', true)
     localStorage.setItem('sessionId', res.data.sessionId)
   })

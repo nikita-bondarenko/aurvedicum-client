@@ -110,14 +110,14 @@ const logout = () => {
   localStorage.removeItem('orderedBasketId')
   localStorage.setItem('userAccessKey', '')
   store.clearBasketData()
-  fetchWithParams('get', 'admin/logout', {
+  fetchWithParams('get', 'api/admin/logout', {
     sessionId: localStorage.getItem('sessionId')
   })
     .then(() => store.updateProp('isAuth', false))
     .catch(() => store.updateProp('isAuth', false))
 }
 
-fetchWithParams('get', 'admin/', {
+fetchWithParams('get', 'api/admin/', {
   sessionId: localStorage.getItem('sessionId') || ''
 }).then((res) => {
   store.updateProp('isAuth', res.data)
@@ -137,6 +137,8 @@ store.getBasketStatus()
 watch(
   () => route.name,
   (value) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+
     store.getBasketStatus()
     if (value !== 'admin' && value.includes('admin')) {
       store.updateWithStorage('page', {
@@ -177,9 +179,11 @@ watch(
     width: fit-content;
     font-family: inherit;
     padding: 0 0 0 25px;
+    color: $w;
     transition: color 0.2s ease-in-out;
     svg {
       path {
+        fill: $w;
         transition: fill 0.2s ease-in-out;
       }
       position: absolute;
@@ -210,13 +214,14 @@ watch(
     width: 24px;
     height: 30px;
     path {
+      fill: $w;
       transition: fill 0.2s ease-in-out;
     }
   }
 
   &:hover {
     svg path {
-      fill: $green;
+      fill: $red;
     }
   }
   &.spinner-small {
@@ -248,6 +253,8 @@ watch(
   }
 }
 .header__info {
+  color: $w;
+
   grid-column: 1/2;
   grid-row: 2/3;
 }

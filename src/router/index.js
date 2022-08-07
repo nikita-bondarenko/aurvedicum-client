@@ -59,7 +59,17 @@ const routes = [
       {
         path: '/admin/contacts',
         name: 'adminContacts',
-        component: () => import('@/components/admin/contacts/AdminContacts.vue')
+        component: () => import('@/components/admin/contacts/ListPage.vue')
+      },
+      {
+        path: '/admin/contactsAdd',
+        name: 'adminAddContact',
+        component: () => import('@/components/admin/contacts/AddItem.vue')
+      },
+      {
+        path: '/admin/contacts/:id',
+        name: 'adminChangeContact',
+        component: () => import('@/components/admin/contacts/ChangeItem.vue')
       },
       {
         path: '/admin/orders',

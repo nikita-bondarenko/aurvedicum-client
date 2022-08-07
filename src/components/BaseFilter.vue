@@ -126,7 +126,6 @@ export default defineComponent({
     getData()
     onMounted(() => {
       store.updateProp('catalog', document.getElementById('catalog'))
-      console.log(document.getElementById('catalog'))
     })
 
     watch(

@@ -29,8 +29,6 @@ export const store = reactive({
     localStorage.getItem('orderedBasketId') === localStorage.getItem('userAccessKey')
       ? this.isOrderedBasket = true
       : this.isOrderedBasket = false
-  },
-  setCatalogPathName() {
-    localStorage.setItem('pathname', '/')
   }
+
 })

@@ -158,6 +158,12 @@
 }
 
 @media (max-width: 450px) {
+
+    .dictionary__item {
+        grid-template-columns: auto;
+        grid-gap: 10px;
+    }
+
     .cart__order {
         grid-template-columns: 1fr;
     }

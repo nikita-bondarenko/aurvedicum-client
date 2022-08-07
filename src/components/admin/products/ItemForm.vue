@@ -184,12 +184,10 @@ import AdminFormList from '@/components/admin/AdminFormList.vue'
 import useApi from '@/hooks/useApi'
 import { computed, ref, defineProps, defineEmits } from 'vue'
 import { store } from '@/store/store'
-import { IMAGE__STORE } from '@/components/../config'
 import AdminFormListItem from '@/components/admin/AdminFormListItem.vue'
 import AdminSelect from '@/components/admin/AdminSelect.vue'
 import FormFileInput from '@/components/form/FormFileInput.vue'
 import FormSelectInput from '@/components/form/FormSelectInput.vue'
-console.log(IMAGE__STORE)
 const props = defineProps(['data', 'text', 'formError'])
 const emit = defineEmits(['update:data', 'submit'])
 const { getBrands, getCategories } = useApi()
