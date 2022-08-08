@@ -131,7 +131,7 @@ $ml: 20px;
       top: -15px;
       right: -15px;
       left: -15px;
-      bottom: -15px;
+      bottom: 0px;
       content: '';
       position: absolute;
       background: transparent;

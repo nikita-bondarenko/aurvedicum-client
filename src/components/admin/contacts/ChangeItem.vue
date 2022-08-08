@@ -30,7 +30,8 @@ import { changeContact } from '@/hooks/useData'
 import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
 
-import ItemForm from '@/components/admin/contacts/ItemForm.vue'
+import ItemForm from './ItemForm.vue'
+
 export default defineComponent({
   components: { ItemForm },
   setup() {

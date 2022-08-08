@@ -68,14 +68,8 @@
       :pagination="pagination"
     />
   </section>
-  <!-- <AdminFormList>
-    <AdminFormListItem> </AdminFormListItem>
-  </AdminFormList> -->
 </template>
 <script setup>
-// import AdminFormList from '@/components/admin/AdminFormList.vue.js'
-
-// import AdminFormListItem from '@/components/admin/AdminFormListItem.vue.js'
 import { ref, watch } from 'vue'
 import useApi from '@/hooks/useApi'
 import { store } from '@/store/store'

@@ -1,0 +1,36 @@
+@import '@/styles/style';
+
+.article {
+    &__main-header input {
+        padding-top: 13px;
+    }
+
+    &__image {
+        max-width: 500px;
+        border-radius: 15px;
+    }
+
+    .data-base__changed,
+    .data-base__created {
+        display: block;
+    }
+
+    .data-base__item-body {
+        position: relative;
+    }
+
+    .form__list {
+        margin-top: 20px;
+    }
+
+    .form__sublist {
+        .form__item-body {
+            width: 100%;
+        }
+    }
+
+    .form__item-body {
+        width: calc(100% - 40px);
+        padding-bottom: 10px;
+    }
+}

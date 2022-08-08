@@ -62,7 +62,7 @@ const routes = [
         component: () => import('@/components/admin/contacts/ListPage.vue')
       },
       {
-        path: '/admin/contactsAdd',
+        path: '/admin/contacts/add',
         name: 'adminAddContact',
         component: () => import('@/components/admin/contacts/AddItem.vue')
       },
@@ -107,9 +107,50 @@ const routes = [
         component: () => import('@/views/BasketPage.vue')
       },
       {
-        path: '/admin/politics',
-        name: 'adminPolitics',
-        component: () => import('@/components/admin/politics/AdminPolitics.vue')
+        path: '/admin/articles',
+        name: 'adminArticles',
+        component: () => import('@/components/admin/articles/ListPage.vue')
+      },
+      {
+        path: '/admin/articles/add',
+        name: 'adminAddArticle',
+        component: () => import('@/components/admin/articles/AddItem.vue')
+      },
+      {
+        path: '/admin/news',
+        name: 'adminNews',
+        component: () => import('@/components/admin/news/ListPage.vue')
+      },
+      {
+        path: '/admin/news/add',
+        name: 'adminAddNew',
+        component: () => import('@/components/admin/news/AddItem.vue')
+      },
+      {
+        path: '/admin/news/:id',
+        name: 'adminChangeNew',
+        component: () => import('@/components/admin/news/ChangeItem.vue')
+      },
+      {
+        path: '/admin/articles/:id',
+        name: 'adminChangeArticle',
+        component: () => import('@/components/admin/articles/ChangeItem.vue')
+      },
+
+      {
+        path: '/admin/additions',
+        name: 'adminAdditions',
+        component: () => import('@/components/admin/additions/ListPage.vue')
+      },
+      {
+        path: '/admin/additions/:id',
+        name: 'adminChangeAddition',
+        component: () => import('@/components/admin/additions/ChangeItem.vue')
+      },
+      {
+        path: '/admin/additions/add',
+        name: 'adminAddAddition',
+        component: () => import('@/components/admin/additions/AddItem.vue')
       },
       {
         path: 'admin/:pathMatch(.*)*',

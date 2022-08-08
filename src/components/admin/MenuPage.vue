@@ -4,6 +4,18 @@
 
     <ul class="menu__list">
       <li class="menu__item">
+        <router-link class="menu__link" :to="{ name: 'adminNews' }"
+          >Новости
+        </router-link>
+      </li>
+
+      <li class="menu__item">
+        <router-link class="menu__link" :to="{ name: 'adminArticles' }"
+          >Статьи
+        </router-link>
+      </li>
+
+      <li class="menu__item">
         <router-link class="menu__link" :to="{ name: 'adminProducts' }"
           >Товары
         </router-link>
@@ -13,29 +25,21 @@
           >Заказы
         </router-link>
       </li>
+
       <li class="menu__item">
         <router-link class="menu__link" :to="{ name: 'adminContacts' }"
           >Контакты
         </router-link>
       </li>
       <li class="menu__item">
-        <router-link class="menu__link" :to="{ name: 'adminPolitics' }"
-          >Политика конф.
+        <router-link class="menu__link" :to="{ name: 'adminAdditions' }"
+          >Разное
         </router-link>
       </li>
     </ul>
-    <router-link
-      v-if="route.name === 'adminProducts'"
-      :to="{ name: 'adminAddProduct' }"
-      class="data-base__add-button"
-      >Добавить товар</router-link
-    >
   </nav>
 </template>
-<script setup>
-import { useRoute } from 'vue-router'
-const route = useRoute()
-</script>
+<script setup></script>
 <style lang="scss">
 @import '@/styles/menu.scss';
 </style>

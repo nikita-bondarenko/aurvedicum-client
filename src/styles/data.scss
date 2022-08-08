@@ -1,14 +1,19 @@
 @import '@/styles/style.scss';
 
+.contact,
+.article {
+    .data-base__button-add {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}
+
 .contact {
     input {
         padding-top: 13px;
     }
 
-    .data-base__button-add {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
+
 
     .data-base__contact {
         position: relative;
@@ -39,6 +44,18 @@
         display: block;
     }
 
+}
+
+.form__button-add {
+    @include button;
+    @include smallFont;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0;
+    margin-left: 20px;
+    margin-top: 10px;
 }
 
 .data-base {
@@ -84,6 +101,8 @@
         cursor: pointer;
         font-weight: 600;
     }
+
+
 
     &__button-del {
         position: absolute;

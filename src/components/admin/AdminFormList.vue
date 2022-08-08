@@ -11,7 +11,7 @@
       v-if="buttonText !== 'бренд'"
       type="button"
       @click.prevent="addItem"
-      class="data-base__button-add"
+      class="form__button-add"
     >
       Добавить {{ buttonText }}
     </button>
@@ -27,7 +27,10 @@ const addItem = () => {
     props.items.length > 0
       ? props.items.reduce((id, item) => (item.id > id ? item.id : id), 1) + 1
       : 1
-  items.push({ id })
+  props.buttonText === 'раздел'
+    ? items.push({ id, body: [] })
+    : items.push({ id })
+
   emit('update:items', items)
 }
 if (props.items.length === 0) addItem()

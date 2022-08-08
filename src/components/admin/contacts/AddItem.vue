@@ -26,7 +26,8 @@
 <script>
 import { addContact } from '@/hooks/useData'
 import { defineComponent } from 'vue'
-import ItemForm from '@/components/admin/contacts/ItemForm.vue'
+import ItemForm from './ItemForm.vue'
+
 export default defineComponent({
   components: { ItemForm },
   setup() {

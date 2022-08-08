@@ -1,6 +1,8 @@
 import useApi from '@/hooks/useApi'
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import router from '@/router'
+import { IMAGE_STORE } from '@/config'
+
 const addContact = () => {
   const { fetch } = useApi()
 
@@ -54,7 +56,6 @@ const changeContact = (id) => {
   fetch('get', `api/contacts/${id}`).then((res) => {
     data.value = res.data
   })
-
   const save = () => {
     error.value = {}
     if (data.value.header) {
@@ -79,5 +80,82 @@ const changeContact = (id) => {
     error
   }
 }
+/* eslint-disable indent */
 
-export { addContact, changeContact }
+const blockNameFromUpper = (blockName) => blockName.split('').map((letter, index) => index === 0 ? letter.toUpperCase() : letter).join('')
+
+const addArticle = (blockName) => {
+  const { fetch } = useApi()
+  const data = ref(localStorage.getItem(`${blockName}Data`)
+    ? JSON.parse(localStorage.getItem(`${blockName}Data`))
+    : {
+      body: []
+    })
+  const error = ref({})
+  watch(() => data.value, () => {
+    localStorage.setItem(`${blockName}Data`, JSON.stringify(data.value))
+  }, { deep: true })
+  const save = () => {
+    error.value = {}
+
+    fetch('post', `api/${blockName}s`, data.value, 'SaveLoading')
+      .then(() => {
+        localStorage.removeItem(`${blockName}Data`)
+        router.push({ name: `admin${blockNameFromUpper(blockName)}s` })
+      })
+      .catch((err) => {
+        error.value = err.response.data
+      })
+  }
+  return {
+    save,
+    data,
+    error
+  }
+}
+
+const changeArticle = (blockName, id) => {
+  const { fetch } = useApi()
+  const data = ref({
+    body: []
+  })
+  const error = ref({})
+  fetch('get', `api/${blockName}s/${id}`).then(res => {
+    data.value = res.data
+  })
+  const save = () => {
+    error.value = {}
+
+    fetch('patch', `api/${blockName}s/${id}`, data.value, 'SaveLoading')
+      .then(() => router.push({ name: `admin${blockNameFromUpper(blockName)}s` }))
+      .catch((err) => {
+        error.value = err.response.data
+      })
+  }
+  return {
+    save,
+    data,
+    error
+  }
+}
+
+const useForm = (props, { emit }) => {
+  const formData = computed({
+    get() {
+      return props.data
+    },
+    set(value) {
+      emit('update:data', value)
+    }
+  })
+  return {
+    formData,
+    IMAGE_STORE
+  }
+}
+
+const useArticleList = () => {
+
+}
+
+export { addContact, changeContact, addArticle, useForm, useArticleList, changeArticle }
