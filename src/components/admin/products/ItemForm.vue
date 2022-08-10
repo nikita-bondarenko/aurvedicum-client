@@ -160,6 +160,68 @@
         </li>
       </ul>
     </fieldset>
+    <fieldset class="form__block form__block--admin recomend">
+      <h2 class="data-base__title">Рекомендуем к этому товару</h2>
+      <AdminFormList
+        :isSublist="true"
+        :header="'Выбор всех товаров в категории'"
+        :button-text="'категорию'"
+        v-model:items="formData.recomend.categories"
+      >
+        <AdminFormListItem
+          :isRecomend="true"
+          v-for="item in formData.recomend.categories"
+          v-model:items="formData.recomend.categories"
+          :item="item"
+          :key="item.id"
+        >
+          <FormSelectInput :id="item.categoryId">
+            <AdminSelect
+              :items="categories"
+              :placeholder="'Выберите категорию'"
+              v-model:id="item.categoryId"
+              v-model:title="item.title"
+            ></AdminSelect>
+          </FormSelectInput>
+        </AdminFormListItem>
+      </AdminFormList>
+      <AdminFormList
+        :isSublist="true"
+        :header="'Выбор всех товаров бренда'"
+        :button-text="'бренд'"
+        v-model:items="formData.recomend.brands"
+      >
+        <AdminFormListItem
+          :isRecomend="true"
+          v-for="item in formData.recomend.brands"
+          v-model:items="formData.recomend.brands"
+          :item="item"
+          :key="item.id"
+        >
+          <FormSelectInput :id="item.brandId">
+            <AdminSelect
+              :items="brands"
+              :placeholder="'Выберите бренд'"
+              v-model:id="item.brandId"
+              v-model:title="item.title"
+            ></AdminSelect>
+          </FormSelectInput>
+        </AdminFormListItem>
+      </AdminFormList>
+      <fieldset class="form__block form__block--admin">
+        <h2 class="data-base__title recomend__name">
+          Выбор товара по отдельности
+        </h2>
+        <CatalogAdd></CatalogAdd>
+      </fieldset>
+      <fieldset class="form__block form__block--admin">
+        <h2 class="data-base__title recomend__name">
+          Список отдельно выбранных товаров
+        </h2>
+        <CatalogView></CatalogView>
+      </fieldset>
+    </fieldset>
+
     <div class="form__button-group">
       <button
         :class="{ 'spinner-button-small': store.isSaveLoading }"
@@ -177,17 +239,20 @@
 </template>
 <script setup>
 // /* eslint-disable space-before-function-paren  */
+import CatalogAdd from './CatalogAdd.vue'
 import FormNumberInput from '@/components/form/FormNumberInput.vue'
 import FormInput from '@/components/form/FormInput.vue'
 import FormTextarea from '@/components/form/FormTextarea.vue'
 import AdminFormList from '@/components/admin/AdminFormList.vue'
 import useApi from '@/hooks/useApi'
 import { computed, ref, defineProps, defineEmits } from 'vue'
+
 import { store } from '@/store/store'
 import AdminFormListItem from '@/components/admin/AdminFormListItem.vue'
 import AdminSelect from '@/components/admin/AdminSelect.vue'
 import FormFileInput from '@/components/form/FormFileInput.vue'
 import FormSelectInput from '@/components/form/FormSelectInput.vue'
+import CatalogView from './CatalogView.vue'
 const props = defineProps(['data', 'text', 'formError'])
 const emit = defineEmits(['update:data', 'submit'])
 const { getBrands, getCategories } = useApi()
@@ -202,6 +267,7 @@ const formData = computed({
     return props.data
   },
   set(value) {
+    console.log(value)
     emit('update:data', value)
   }
 })

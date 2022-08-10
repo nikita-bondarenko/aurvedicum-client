@@ -45,6 +45,13 @@ export default function () {
     return res
   }
 
+  const getFewProducts = async (idArr) => {
+    const res = await Promise.all(idArr.map(id => axios.get(`${API_URL}/api/products/${id}`, {
+      Accept: '*/*'
+    })))
+    return res
+  }
+
   const getProduct = async (body) => {
     const res = await axios.get(`${API_URL}/api/products/${body.id}`,
       {
@@ -271,6 +278,7 @@ export default function () {
     postProduct,
     getBrands,
     getCategories,
-    getProducts
+    getProducts,
+    getFewProducts
   }
 }

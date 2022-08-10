@@ -31,6 +31,7 @@ import ItemForm from '@/components/admin/products/ItemForm.vue'
 import { ref, watch } from 'vue'
 import useApi from '@/hooks/useApi'
 import router from '@/router'
+import { store } from '@/store/store'
 const { fetch } = useApi()
 const data = ref(
   JSON.parse(localStorage.getItem('createData')) || {
@@ -47,9 +48,13 @@ const data = ref(
       { header: 'Преминение', content: [], id: 2 },
       { header: 'Противопоказания', content: [], id: 3 },
       { header: 'Состав', content: [], id: 4 }
-    ]
+    ],
+    recomend: { ids: [], brands: [], categories: [] }
   }
 )
+
+store.updateProp('recomendIds', data.value.recomend.ids)
+
 const error = ref({})
 const create = () => {
   const body = JSON.parse(localStorage.getItem('createData'))

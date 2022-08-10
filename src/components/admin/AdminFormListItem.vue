@@ -2,7 +2,7 @@
   <li class="form__item">
     <div class="form__item-body form__danger">
       <button
-        v-if="items.length > 1"
+        v-if="items.length > 1 || isRecomend"
         @click.prevent="removeItem"
         @mouseenter="dangerOn"
         @mouseleave="dangerOff"
@@ -27,7 +27,8 @@
 import useApi from '@/hooks/useApi'
 import { defineProps, defineEmits } from 'vue'
 const { deleteImage } = useApi()
-const props = defineProps(['item', 'items'])
+const props = defineProps(['item', 'items', 'isRecomend'])
+console.log(props.isRecomend)
 const emit = defineEmits(['update:items'])
 const removeItem = () => {
   if (props.item.filename) {

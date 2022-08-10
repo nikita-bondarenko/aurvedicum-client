@@ -179,6 +179,141 @@ input::-webkit-inner-spin-button {
     }
 }
 
+.catalog__item {
+    position: relative;
+}
+
+.catalog__pic {
+    width: auto;
+    max-width: 270px;
+    min-height: 150px;
+}
+
+.subprice {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: grid;
+
+    grid-gap: 0 10px;
+
+    &__item {
+        background: $hover;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+        font-weight: 600;
+        padding-left: 2px;
+        padding-top: 2px;
+        margin-bottom: 10px;
+    }
+
+    &__empty-item {
+        margin-bottom: 0;
+    }
+}
+
+.catalog__volume {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px 15px;
+
+    .volume {
+        display: grid;
+        grid-template-rows: 12px 14px 12px;
+        grid-gap: 3px;
+
+        &__item {
+            margin: 0;
+            text-align: center;
+        }
+
+        &__price {
+            grid-row: 2/3;
+            line-height: 1;
+        }
+
+        &__subprice {
+            grid-row: 3/4;
+            font-size: 12px;
+            color: $hover;
+            text-decoration: line-through;
+        }
+
+        &__value {
+            grid-row: 1/2;
+            font-size: 12px;
+            color: $light;
+        }
+    }
+}
+
+@mixin catalogBtn {
+    cursor: pointer;
+    z-index: 2;
+    color: transparent;
+    text-transform: uppercase;
+    text-align: center;
+    vertical-align: middle;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    bottom: -5px;
+    left: -5px;
+    border-radius: 5px;
+    background: transparent;
+    transition: background .2s ease-in-out, color .2s ease-in-out;
+    border: none;
+}
+
+.catalog-add {
+    &__item {
+        position: relative;
+        transition: opacity .2s ease-in-out;
+
+        &:hover {
+            opacity: .5;
+
+            .catalog-add__button {
+                color: #000;
+                background: rgba($green, .2);
+            }
+        }
+    }
+
+    &__button {
+        @include catalogBtn();
+    }
+}
+
+.catalog-view {
+    &__item {
+        position: relative;
+        transition: opacity .2s ease-in-out;
+
+        &:hover {
+            opacity: .5;
+
+            .catalog-view__button {
+                color: #000;
+                background: rgba($red, .2);
+            }
+        }
+    }
+
+    &__button {
+        @include catalogBtn();
+    }
+}
+
+
+
+
 @keyframes circle {
     from {
         transform: rotate(0deg);

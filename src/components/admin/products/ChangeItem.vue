@@ -51,7 +51,8 @@ const data = ref({
     { header: 'Преминение', content: [], id: 2 },
     { header: 'Противопоказания', content: [], id: 3 },
     { header: 'Состав', content: [], id: 4 }
-  ]
+  ],
+  recomend: { ids: [], brands: [], categories: [] }
 })
 const error = ref({})
 const id = useRoute().params.id
@@ -79,6 +80,10 @@ const save = () => {
     })
 }
 fetch('get', `api/products/${id}`)
-  .then((res) => (data.value = res.data))
+  .then((res) => {
+    data.value = res.data
+    console.log(res.data.recomend.ids)
+    store.updateProp('recomendIds', res.data.recomend.ids)
+  })
   .catch(() => router.push({ path: 'adminNotFound' }))
 </script>

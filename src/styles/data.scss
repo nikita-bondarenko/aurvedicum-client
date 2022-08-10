@@ -1,5 +1,18 @@
 @import '@/styles/style.scss';
 
+
+.recomend {
+    &__name {
+        font-size: 20px;
+        font-weight: 400;
+    }
+
+    .content__catalog {
+        padding-top: 20px;
+    }
+
+}
+
 .contact,
 .article {
     .data-base__button-add {

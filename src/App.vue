@@ -175,6 +175,12 @@ img {
 }
 
 @media (max-width: 920px) {
+  .subprice__item {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 10px !important;
+  }
+
   .catalog__list {
     grid-gap: 25px 15px;
   }
@@ -223,12 +229,6 @@ img {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .subprice__item {
-    width: 30px !important;
-    height: 30px !important;
-    font-size: 10px !important;
   }
 
   .filter__button-wrapper {
