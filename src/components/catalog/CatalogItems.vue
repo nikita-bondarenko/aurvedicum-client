@@ -1,12 +1,10 @@
 <template>
-  <p v-if="items.length === 0" catalog__error--empty>Список товаров пуст</p>
+  <p v-if="items.length === 0" class="catalog__error--empty">
+    Список товаров пуст
+  </p>
   <ul v-else class="catalog__list">
     <li class="catalog__item" v-for="item in items" :key="item.id">
-      <router-link
-        :to="{ name: 'item', params: { id: item.id } }"
-        class="catalog__pic"
-        href="#"
-      >
+      <router-link to="" @click="go(item.id)" class="catalog__pic">
         <img
           v-show="item.images.length"
           :src="IMAGE_STORE + item.images[0].filename"
@@ -15,7 +13,7 @@
       </router-link>
 
       <h3 class="catalog__title">
-        <router-link :to="{ name: 'item', params: { id: item.id } }" href="#">
+        <router-link to="" @click="go(item.id)">
           {{ item.name }}
         </router-link>
       </h3>
@@ -54,9 +52,16 @@
 </template>
 <script setup>
 /* eslint-disable  no-unused-vars */
-import { defineProps } from 'vue'
+import { defineProps, watchEffect } from 'vue'
 import { IMAGE_STORE } from '@/config'
 import useEditors from '@/hooks/useEditors'
+import { useRouter, useRoute } from 'vue-router'
 const { editNumberFormat, editVolumeFormat } = useEditors()
 const props = defineProps(['items'])
+const route = useRoute()
+const router = useRouter()
+const go = (id) => {
+  router.push(`/${id}`)
+  if (route.name === 'item') location.pathname = `/${id}`
+}
 </script>

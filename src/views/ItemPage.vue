@@ -1,51 +1,6 @@
 <template>
   <main class="content container">
     <div class="content__top">
-      <ul v-if="isAdmin" class="breadcrumbs">
-        <li class="breadcrumbs__item">
-          <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
-            Меню
-          </router-link>
-        </li>
-        <li class="breadcrumbs__item">
-          <router-link :to="{ name: 'adminOrders' }" class="breadcrumbs__link">
-            Заказы
-          </router-link>
-        </li>
-        <li class="breadcrumbs__item">
-          <router-link
-            :to="{ name: 'adminOrderAdd' }"
-            class="breadcrumbs__link"
-          >
-            Оформление заказа
-          </router-link>
-        </li>
-        <li class="breadcrumbs__item">
-          <router-link :to="{ name: 'adminCatalog' }" class="breadcrumbs__link">
-            Каталог
-          </router-link>
-        </li>
-        <li
-          class="breadcrumbs__item"
-          v-for="item in product.categories"
-          :key="item.id"
-        >
-          <router-link
-            :to="{
-              name: 'adminCatalog',
-              params: { categoryId: item.categoryId }
-            }"
-            class="breadcrumbs__link"
-            href="#"
-          >
-            {{ item.title }}
-          </router-link>
-        </li>
-        <li class="breadcrumbs__item">
-          <span class="breadcrumbs__link" disabled> {{ product.name }} </span>
-        </li>
-      </ul>
-
       <ul v-if="store.isOrderedBasket" class="breadcrumbs">
         <li class="breadcrumbs__item">
           <router-link :to="{ name: 'adminMenu' }" class="breadcrumbs__link">
@@ -86,7 +41,7 @@
         </li>
       </ul>
 
-      <ul v-else-if="!isAdmin" class="breadcrumbs">
+      <ul v-else class="breadcrumbs">
         <li class="breadcrumbs__item">
           <router-link
             :to="{ name: 'catalog' }"
@@ -252,6 +207,10 @@
           </p>
         </div>
       </div>
+      <div class="item__recomend">
+        <h3 class="item__title">Рекомендуем также</h3>
+        <CatalogRecomend :recomend="product.recomend"></CatalogRecomend>
+      </div>
     </section>
   </main>
 </template>
@@ -259,18 +218,16 @@
 <script setup>
 // /* eslint-disable */
 import { IMAGE_STORE } from '@/config'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { store } from '@/store/store'
-import { onBeforeUnmount, ref, watch, computed } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
+import CatalogRecomend from '@/components/catalog/CatalogRecomend.vue'
 import useApi from '@/hooks/useApi'
 import useEditors from '@/hooks/useEditors'
 import BaseSelect from '@/components/small/BaseSelect.vue'
 import BaseCounter from '@/components/small/BaseCounter.vue'
 import BaseSpinner from '@/components/small/BaseSpinner.vue'
-const isAdmin = computed(() => {
-  if (!useRoute().name) return false
-  return useRoute().name === 'adminItem'
-})
+const router = useRouter()
 const productId = useRoute().params.id
 const { getProductData, addToBasket } = useApi()
 const product = ref({})
@@ -303,7 +260,10 @@ getProductData(productId)
       descItem.value = product.value.description[0]
     }
   })
-  .catch(() => (isLoadingFailed.value = true))
+  .catch(() => {
+    isLoadingFailed.value = true
+    router.push({ name: 'notFound' })
+  })
   .then(() => (isLoading.value = false))
 
 const intervalId = setInterval(() => {

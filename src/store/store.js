@@ -14,6 +14,8 @@ export const store = reactive({
   isBasketLoading: true,
   isBasketLoadingFailed: false,
   recomendIds: [],
+  recomendBrands: [],
+  recomendCatagories: [],
   updateProp(prop, value) {
     this[prop] = value
   },

@@ -11,7 +11,7 @@ import BaseSpinner from '@/components/small/BaseSpinner.vue'
 import BaseSearch from '@/components/BaseSearch.vue'
 import { useRoute } from 'vue-router'
 import { store } from '@/store/store'
-const { fetch, getFewProducts } = useApi()
+const { fetch, getFewProducts, getRecomendProducts } = useApi()
 const addContact = () => {
   const data = ref({
     header: '',
@@ -221,30 +221,31 @@ const useCatalogView = (route, limit) => {
     (value) => (config.value.name = value)
   )
 
-  const editedItems = computed(() => {
-    if (!store.recomendIds) return items.value
-    return items.value.filter((item) => store.recomendIds.every(id => id !== item.id))
-  })
-
-  const localConfig = ref({ limit: 1, page: 1 })
-
+  const editedItems = ref([])
+  const localConfig = ref({ limit: 6, page: 1 })
   const localPagination = ref({})
-
   const localItems = ref([])
-  const getLocalData = () => {
-    const { items, pagination } = getPaginatedList(editedItems.value, localConfig.value)
-    const { page, pages } = pagination
 
-    localPagination.value = pagination
-    localItems.value = items
-    if (page > pages) {
-      localConfig.value.page = pages
+  if (route.name !== 'catalog') {
+    watch(() => [store.recomendIds, store.recomendCategories, store.recomendBrands, items.value], (value) => {
+      editedItems.value = items.value.filter((item) => store.recomendIds.every(id => id !== item.id) && item.id !== route.params.id && store.recomendCategories.every(c => item.categories.every(cat => cat.categoryId !== c.categoryId)) && store.recomendBrands.every(b => item.brands.every(br => br.brandId !== b.brandId)))
+      console.log(value)
+    }, { deep: true, immediate: true })
+
+    const getLocalData = () => {
+      const { items, pagination } = getPaginatedList(editedItems.value, localConfig.value)
+      const { page, pages } = pagination
+
+      localPagination.value = pagination
+      localItems.value = items
+      if (page > pages) {
+        localConfig.value.page = pages
+      }
     }
+    watch(() => [editedItems.value, localConfig.value], (value) => {
+      getLocalData()
+    }, { deep: true, immediate: true })
   }
-  watch(() => [editedItems.value, localConfig.value], (value) => {
-    getLocalData()
-  }, { deep: true, immediate: true })
-
   return {
     localConfig,
     localPagination,
@@ -293,12 +294,54 @@ const CatalogAdd = {
 const useRecomendCatalog = () => {
   const editedItems = ref([])
   const isLoading = ref(false)
+
   watch(() => store.recomendIds, async (value) => {
+    console.log(value)
     const arr = await getFewProducts(value).then(res => res.map(res => res.data))
     editedItems.value = arr
   }, { deep: true, immediate: true })
 
-  const localConfig = ref({ limit: 1, page: 1 })
+  const localConfig = ref({ limit: 4, page: 1 })
+
+  const localPagination = ref({})
+
+  const localItems = ref([])
+  const getLocalData = () => {
+    const { items, pagination } = getPaginatedList(editedItems.value, localConfig.value)
+    const { page, pages } = pagination
+
+    localPagination.value = pagination
+    localItems.value = items
+    if (page > pages) {
+      localConfig.value.page = pages
+    }
+  }
+  watch(() => [editedItems.value, localConfig.value], (value) => {
+    getLocalData()
+  }, { deep: true, immediate: true })
+
+  return {
+    localConfig,
+    localPagination,
+    localItems,
+
+    isLoading,
+    editedItems
+  }
+}
+
+const useCatalogViewRecomend = (route, recomend) => {
+  const editedItems = ref([])
+  const isLoading = ref(false)
+  const getData = async () => {
+    editedItems.value = await getRecomendProducts(recomend, route.params.id)
+  }
+
+  getData()
+
+  watch(() => editedItems.value, (value) => console.log(value))
+
+  const localConfig = ref({ limit: 4, page: 1 })
 
   const localPagination = ref({})
 
@@ -335,9 +378,25 @@ const CatalogView = {
     BaseSpinner,
     BaseSearch
   },
-  setup() {
-    return useRecomendCatalog()
+  props: ['recomend'],
+
+  setup(props) {
+    return useRecomendCatalog(props.recomend)
   }
 }
 
-export { addContact, changeContact, addArticle, useForm, changeArticle, useCatalogView, CatalogView, CatalogVue, CatalogAdd }
+const CatalogRecomend = {
+  components: {
+    BaseFilter,
+    CatalogItems,
+    PaginationBase,
+    BaseSpinner,
+    BaseSearch
+  },
+  props: ['recomend'],
+  setup(props) {
+    return useCatalogViewRecomend(useRoute(), props.recomend)
+  }
+}
+
+export { addContact, changeContact, addArticle, useForm, changeArticle, useCatalogView, CatalogRecomend, CatalogView, CatalogVue, CatalogAdd }

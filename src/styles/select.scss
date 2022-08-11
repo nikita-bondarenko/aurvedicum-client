@@ -15,6 +15,7 @@ input::-webkit-inner-spin-button {
 }
 
 .select {
+    min-width: 220px;
     position: relative;
     cursor: pointer;
     display: inline-block;

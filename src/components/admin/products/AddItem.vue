@@ -28,7 +28,7 @@
 </template>
 <script setup>
 import ItemForm from '@/components/admin/products/ItemForm.vue'
-import { ref, watch } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
 import useApi from '@/hooks/useApi'
 import router from '@/router'
 import { store } from '@/store/store'
@@ -54,6 +54,21 @@ const data = ref(
 )
 
 store.updateProp('recomendIds', data.value.recomend.ids)
+watch(
+  () => store.recomendIds,
+  (value) => {
+    data.value.recomend.ids = value
+  }
+)
+
+watch(
+  () => data.value,
+  (value) => {
+    store.updateProp('recomendBrands', value.recomend.brands)
+    store.updateProp('recomendCategories', value.recomend.categories)
+  },
+  { deep: true, immediate: true }
+)
 
 const error = ref({})
 const create = () => {
@@ -66,7 +81,7 @@ const create = () => {
       item.content = item.content.filter((item) => !!item.paragraph)
     })
   }
-  fetch('post', 'api/products', body, 'CreateLoading')
+  fetch('post', 'api/products', body, 'SaveLoading')
     .then(() => {
       localStorage.removeItem('createData')
       router.push({ name: 'adminProducts' })
@@ -87,4 +102,6 @@ watch(
   },
   { deep: true, immediate: true }
 )
+
+onBeforeUnmount(() => store.updateProp('recomendIds', []))
 </script>

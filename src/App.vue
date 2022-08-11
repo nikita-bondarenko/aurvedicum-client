@@ -64,6 +64,12 @@ body::after {
   background-color: lighten($red, 30%);
 }
 
+.catalog__error--empty {
+  display: inline-block;
+  margin: 20px auto 60px;
+  text-align: center;
+}
+
 .form__legend {
   @include fontCondenced;
 }

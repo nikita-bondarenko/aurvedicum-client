@@ -28,7 +28,6 @@ import useApi from '@/hooks/useApi'
 import { defineProps, defineEmits } from 'vue'
 const { deleteImage } = useApi()
 const props = defineProps(['item', 'items', 'isRecomend'])
-console.log(props.isRecomend)
 const emit = defineEmits(['update:items'])
 const removeItem = () => {
   if (props.item.filename) {

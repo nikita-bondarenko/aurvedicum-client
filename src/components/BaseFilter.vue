@@ -46,7 +46,6 @@
           <legend class="form__legend">Категория</legend>
           <label class="form__label">
             <BaseSelect
-              style="z-index: 10000"
               :items="categories"
               :placeholder="'Все категории'"
               v-model="config.categoryId"

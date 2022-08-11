@@ -27,7 +27,6 @@ export default function () {
     if (data.pagination) {
       store.updateProp('basketPagination', data.pagination)
     }
-
     store.updateProp('basketItemsQuantity', data.itemsQuantity)
     store.updateProp('basketTotalPrice', data.totalPrice)
   }
@@ -48,8 +47,28 @@ export default function () {
   const getFewProducts = async (idArr) => {
     const res = await Promise.all(idArr.map(id => axios.get(`${API_URL}/api/products/${id}`, {
       Accept: '*/*'
-    })))
-    return res
+    }).catch(() => null)))
+    return res.filter(item => !!item)
+  }
+
+  const getRecomendProducts = async (recomend, itemId) => {
+    console.log(recomend)
+    const arrFromIds = await getFewProducts(recomend.ids).then(res => res.map(res => res.data))
+    const arrFromBrands = await Promise.all(recomend.brands.filter(c => !!c.brandId).map(brand => getProducts({ brandId: brand.brandId }).catch(() => []))).then((res) => res.map(res => res.data.items).reduce((arr, items) => {
+      items.forEach(item => arr.includes(item) || item.id === itemId ? 1 : arr.push(item))
+      return arr
+    }, []))
+    const arrFromCategories = await Promise.all(recomend.categories.filter(c => !!c.categoryId).map(category => getProducts({ categoryId: category.categoryId }).catch(() => []))).then((res) => res.map(res => res.data.items).reduce((arr, items) => {
+      items.forEach(item => arr.includes(item) || item.id === itemId ? 1 : arr.push(item))
+      return arr
+    }, []))
+    const arr = [arrFromIds, arrFromBrands, arrFromCategories].reduce((arr, items) => {
+      items.forEach(item => {
+        if (arr.every(i => i.id !== item.id)) arr.push(item)
+      })
+      return arr
+    }, [])
+    return arr
   }
 
   const getProduct = async (body) => {
@@ -279,6 +298,7 @@ export default function () {
     getBrands,
     getCategories,
     getProducts,
-    getFewProducts
+    getFewProducts,
+    getRecomendProducts
   }
 }

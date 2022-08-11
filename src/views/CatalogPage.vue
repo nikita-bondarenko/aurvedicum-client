@@ -22,7 +22,7 @@
         </li>
       </ul>
     </div>
-    <CatalogVue class="recomend__catalog"></CatalogVue>
+    <CatalogVue></CatalogVue>
   </main>
 </template>
 <script setup>

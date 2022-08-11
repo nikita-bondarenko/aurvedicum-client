@@ -30,10 +30,11 @@
 </template>
 <script setup>
 import ItemForm from '@/components/admin/products/ItemForm.vue'
-import { ref } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
 import useApi from '@/hooks/useApi'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+
 import { store } from '@/store/store'
 import BaseSpinner from '@/components/small/BaseSpinner.vue'
 const { fetch } = useApi()
@@ -62,6 +63,7 @@ const save = () => {
   body.description = body.description.filter((item) =>
     item.content.some((obj) => !!obj.paragraph)
   )
+  body.recomend.ids = store.recomendIds
   if (body.description) {
     body.description.forEach((item) => {
       item.content = item.content.filter((item) => !!item.paragraph)
@@ -82,8 +84,18 @@ const save = () => {
 fetch('get', `api/products/${id}`)
   .then((res) => {
     data.value = res.data
-    console.log(res.data.recomend.ids)
     store.updateProp('recomendIds', res.data.recomend.ids)
   })
   .catch(() => router.push({ path: 'adminNotFound' }))
+
+watch(
+  () => data.value,
+  (value) => {
+    store.updateProp('recomendBrands', value.recomend.brands)
+    store.updateProp('recomendCategories', value.recomend.categories)
+  },
+  { deep: true, immediate: true }
+)
+
+onBeforeUnmount(() => store.updateProp('recomendIds', []))
 </script>

@@ -1,5 +1,7 @@
 <template>
-  <p v-if="items.length === 0" catalog__error--empty>Список товаров пуст</p>
+  <p v-if="items.length === 0" class="catalog__error--empty">
+    Список товаров пуст
+  </p>
   <ul v-else class="catalog__list">
     <li
       class="catalog__item catalog-view__item"
