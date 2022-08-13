@@ -94,7 +94,6 @@ export default defineComponent({
     })
     const getData = () =>
       fetchWithParams('get', 'api/additions', config.value).then((res) => {
-        console.log(res.data)
         items.value = res.data.items
         pagination.value = res.data.pagination
       })

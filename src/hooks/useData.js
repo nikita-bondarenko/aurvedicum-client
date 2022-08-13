@@ -41,8 +41,6 @@ const addContact = () => {
     fetch('post', 'api/contacts', data.value, 'PostLoading')
       .then(() => router.push({ name: 'adminContacts' }))
       .catch((err) => {
-        console.log(err)
-
         error.value = err.response.data
         if (!data.value.header) data.value.header = ''
         if (!data.value.phone) data.value.phone = ''
@@ -72,7 +70,6 @@ const changeContact = (id) => {
     fetch('patch', `api/contacts/${id}`, data.value, 'PostLoading')
       .then(() => router.push({ name: 'adminContacts' }))
       .catch((err) => {
-        console.log(err)
         error.value = err.response.data
         if (!data.value.header) data.value.header = ''
         if (!data.value.phone) data.value.phone = ''
@@ -229,7 +226,6 @@ const useCatalogView = (route, limit) => {
   if (route.name !== 'catalog') {
     watch(() => [store.recomendIds, store.recomendCategories, store.recomendBrands, items.value], (value) => {
       editedItems.value = items.value.filter((item) => store.recomendIds.every(id => id !== item.id) && item.id !== route.params.id && store.recomendCategories.every(c => item.categories.every(cat => cat.categoryId !== c.categoryId)) && store.recomendBrands.every(b => item.brands.every(br => br.brandId !== b.brandId)))
-      console.log(value)
     }, { deep: true, immediate: true })
 
     const getLocalData = () => {
@@ -296,7 +292,6 @@ const useRecomendCatalog = () => {
   const isLoading = ref(false)
 
   watch(() => store.recomendIds, async (value) => {
-    console.log(value)
     const arr = await getFewProducts(value).then(res => res.map(res => res.data))
     editedItems.value = arr
   }, { deep: true, immediate: true })
@@ -338,9 +333,6 @@ const useCatalogViewRecomend = (route, recomend) => {
   }
 
   getData()
-
-  watch(() => editedItems.value, (value) => console.log(value))
-
   const localConfig = ref({ limit: 4, page: 1 })
 
   const localPagination = ref({})

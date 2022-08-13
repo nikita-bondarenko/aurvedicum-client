@@ -30,16 +30,14 @@
 </template>
 <script setup>
 /* eslint-disable  no-unused-vars */
-import { defineProps, computed, watchEffect } from 'vue'
+import { defineProps } from 'vue'
 import { IMAGE_STORE } from '@/config'
 import { store } from '@/store/store'
 import useEditors from '@/hooks/useEditors'
 const { editNumberFormat, editVolumeFormat } = useEditors()
 const props = defineProps(['items'])
-watchEffect(() => console.log(props.items))
 const del = (id) => {
   const arr = store.recomendIds.filter((itemId) => id !== itemId)
   store.updateProp('recomendIds', arr)
-  console.log(store.recomendIds)
 }
 </script>

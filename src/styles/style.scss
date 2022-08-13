@@ -90,6 +90,7 @@ input::-webkit-inner-spin-button {
 }
 
 
+
 .button {
     &--primery {
         @include buttonBack;
@@ -305,13 +306,24 @@ input::-webkit-inner-spin-button {
     grid-template-columns: auto;
 
     .catalog__list {
-
-        grid-template-columns: repeat(4, 1fr) !important;
+        grid-template-columns: repeat(4, 270px);
     }
 
-    @media (max-width: 1240px) {
+    @media (max-width: 1200px) {
         .catalog__list {
-            grid-template-columns: repeat(2, 1fr) !important;
+            grid-template-columns: repeat(3, 270px);
+        }
+    }
+
+    @media (max-width:990px) {
+        .catalog__list {
+            grid-template-columns: repeat(2, 270px);
+        }
+    }
+
+    @media (max-width:740px) {
+        .catalog__list {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 

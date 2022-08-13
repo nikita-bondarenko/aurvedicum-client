@@ -267,7 +267,6 @@ const formData = computed({
     return props.data
   },
   set(value) {
-    console.log(value)
     emit('update:data', value)
   }
 })

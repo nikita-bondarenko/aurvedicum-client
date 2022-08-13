@@ -52,7 +52,6 @@ export default function () {
   }
 
   const getRecomendProducts = async (recomend, itemId) => {
-    console.log(recomend)
     const arrFromIds = await getFewProducts(recomend.ids).then(res => res.map(res => res.data))
     const arrFromBrands = await Promise.all(recomend.brands.filter(c => !!c.brandId).map(brand => getProducts({ brandId: brand.brandId }).catch(() => []))).then((res) => res.map(res => res.data.items).reduce((arr, items) => {
       items.forEach(item => arr.includes(item) || item.id === itemId ? 1 : arr.push(item))

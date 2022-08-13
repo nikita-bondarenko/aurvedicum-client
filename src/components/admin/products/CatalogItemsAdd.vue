@@ -38,10 +38,8 @@ const { editNumberFormat, editVolumeFormat } = useEditors()
 const props = defineProps(['items'])
 
 const add = (id) => {
-  console.log(store.recomendIds)
   const arr = store.recomendIds
   arr.push(id)
   store.updateProp('recomendIds', arr)
-  console.log(store.recomendIds)
 }
 </script>

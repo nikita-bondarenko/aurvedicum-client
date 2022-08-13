@@ -23,7 +23,7 @@ import BaseFooter from './components/BaseFooter.vue'
 }
 
 body::before {
-  z-index: -2;
+  z-index: -10000;
 
   @include back;
   background: no-repeat center / cover url('../public/img/back.jpg');
@@ -31,7 +31,7 @@ body::before {
 }
 
 body::after {
-  z-index: -1;
+  z-index: -9000;
   @include back;
   background: rgba($color: #000000, $alpha: 0.6);
 }
@@ -42,7 +42,14 @@ body::after {
 }
 
 .content {
-  background: $w;
+  position: relative;
+  &::before {
+    z-index: -1000;
+    @include back;
+    position: absolute;
+    content: '';
+    background: $w;
+  }
 }
 
 .settings {
@@ -142,7 +149,6 @@ body::after {
 
 img {
   width: 100% !important;
-  height: 100% !important;
 }
 
 .content__top {
@@ -171,6 +177,7 @@ img {
   .catalog__list {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .header__wrapper {
     grid-template-columns: 1fr 140px 1fr 25px;
   }
@@ -181,6 +188,10 @@ img {
 }
 
 @media (max-width: 920px) {
+  .catalog__pic img {
+    height: 200px;
+  }
+
   .subprice__item {
     width: 30px !important;
     height: 30px !important;

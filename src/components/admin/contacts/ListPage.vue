@@ -86,7 +86,6 @@ const getData = () => {
   fetchWithParams('get', 'api/contacts', config.value).then((res) => {
     pagination.value = res.data.pagination
     items.value = res.data.items
-    console.log(res.data)
   })
 }
 
