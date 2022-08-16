@@ -1,0 +1,47 @@
+@import '@/styles/style.scss';
+
+.page {
+
+    &__image {
+        width: 100% !important;
+        border-radius: 20px;
+        object-fit: cover;
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 28px;
+        color: $almostDark;
+        font-weight: 300
+    }
+
+    h1,
+    h2 {
+        @include fontCondenced;
+        color: $almostDark;
+    }
+
+    h1 {
+        margin: 50px 0;
+        text-align: center;
+        text-transform: uppercase;
+
+    }
+
+    &__section:not(:last-child) {
+        padding-bottom: 30px;
+    }
+
+    .text {
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+
+        &__header {
+            margin-bottom: 10px;
+        }
+
+        &__part {
+            margin: 0;
+        }
+    }
+}

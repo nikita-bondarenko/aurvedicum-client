@@ -296,7 +296,8 @@ const useRecomendCatalog = () => {
     editedItems.value = arr
   }, { deep: true, immediate: true })
 
-  const localConfig = ref({ limit: 4, page: 1 })
+  const limit = document.body.clientWidth > 1240 ? 8 : 6
+  const localConfig = ref({ limit, page: 1 })
 
   const localPagination = ref({})
 
@@ -333,7 +334,10 @@ const useCatalogViewRecomend = (route, recomend) => {
   }
 
   getData()
-  const localConfig = ref({ limit: 4, page: 1 })
+
+  const limit = document.body.clientWidth > 1240 ? 8 : 6
+
+  const localConfig = ref({ limit, page: 1 })
 
   const localPagination = ref({})
 

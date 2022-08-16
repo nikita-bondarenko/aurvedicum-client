@@ -12,6 +12,26 @@ const routes = [
 
     component: () => import('../views/ItemPage.vue')
   },
+  {
+    path: '/news/',
+    name: 'news',
+    component: () => import('../views/NewsPage.vue')
+  },
+  {
+    path: '/news/:id',
+    name: 'newsItem',
+    component: () => import('../views/NewsItemPage.vue')
+  },
+  {
+    path: '/articles/',
+    name: 'articles',
+    component: () => import('../views/ArticlesPage.vue')
+  },
+  {
+    path: '/articles/:id',
+    name: 'articlesItem',
+    component: () => import('../views/ArticlesItemPage.vue')
+  },
 
   {
     path: '/basket',
@@ -160,6 +180,28 @@ const routes = [
 
     ]
   },
+  {
+    path: '/agreement',
+    name: 'agreement',
+    component: () => import('@/views/AgreementPage.vue')
+  },
+  {
+    path: '/politic',
+    name: 'politic',
+    component: () => import('@/views/PoliticPage.vue')
+  },
+  {
+    path: '/contacts',
+    name: 'contacts',
+    component: () => import('@/views/ContactsPage.vue')
+  },
+
+  {
+    path: '/history',
+    name: 'history',
+    component: () => import('@/views/HistoryPage.vue')
+  },
+
   {
     path: '/:pathMatch(.*)*',
     name: 'notFound',

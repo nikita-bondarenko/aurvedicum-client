@@ -1,32 +1,24 @@
 <template>
+  <MenuModal></MenuModal>
   <BaseHeader></BaseHeader>
   <router-view></router-view>
 
   <BaseFooter></BaseFooter>
-  <div id="teleport-target"></div>
 </template>
 <script setup>
 import BaseHeader from './components/BaseHeader.vue'
 import BaseFooter from './components/BaseFooter.vue'
+import MenuModal from '@/components/MenuModal.vue'
 </script>
 <style lang="scss">
 @import '@/../public/css/style.min.css';
 
 @import '@/styles/style.scss';
-@mixin back {
-  position: fixed;
-  content: '';
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-}
 
 body::before {
   z-index: -10000;
-
   @include back;
-  background: no-repeat center / cover url('../public/img/back.jpg');
+  background: no-repeat top left / cover url('../public/img/back.jpg');
   transform: rotate(180deg);
 }
 
@@ -173,17 +165,18 @@ img {
   display: none;
 }
 
-@media (max-width: 1220px) {
+@media (max-width: 1240px) {
+  .catalog__list {
+    grid-template-columns: repeat(2, 270px);
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 1000px) {
   .catalog__list {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .header__wrapper {
-    grid-template-columns: 1fr 140px 1fr 25px;
-  }
-
-  .footer__wrapper {
-    grid-template-columns: 1fr 1fr;
+    grid-gap: 25px 15px;
   }
 }
 
@@ -198,10 +191,6 @@ img {
     font-size: 10px !important;
   }
 
-  .catalog__list {
-    grid-gap: 25px 15px;
-  }
-
   .catalog__volume {
     grid-template-columns: repeat(2, 1fr) !important;
   }
@@ -210,26 +199,11 @@ img {
     width: auto;
     height: auto;
   }
-
-  .footer__wrapper {
-    grid-template-columns: auto;
-
-    span,
-    ul,
-    p {
-      grid-column: 1;
-      grid-row: auto;
-    }
-  }
 }
 
 @media (max-width: 740px) {
   .settings {
     border-right: 0px solid $grey;
-  }
-
-  .header__wrapper {
-    grid-column-gap: 20px;
   }
 
   .container {
@@ -290,15 +264,6 @@ img {
   // .item__subprice {
   //   font-size: 16px !important;
   // }
-
-  .header__info,
-  .header__tel {
-    display: none;
-  }
-  .header__wrapper {
-    grid-template-columns: auto 25px;
-    grid-template-rows: auto;
-  }
 
   .header__logo {
     grid-column: 1/3;
@@ -378,10 +343,6 @@ img {
 
   .catalog__list {
     grid-gap: 20px 10px;
-  }
-
-  .footer__wrapper {
-    padding-top: 20px;
   }
 }
 </style>

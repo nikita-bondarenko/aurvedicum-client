@@ -6,13 +6,13 @@ export default function () {
   const editNumberFormat = (number) => new Intl.NumberFormat('ru-RU').format(number);
 
   const editVolumeFormat = (text) => {
-    if (text) {
-      const row = text.split(' ').filter(item => item.length > 0)
-      const number = Number(row.reduce((arr, item) => Number(item) ? [...arr, item] : arr, []).join(''))
-      const type = row.reduce((arr, item) => !Number(item) ? [...arr, item] : arr, []).join('')
+    // if (text) {
+    //   const row = text.split(' ').filter(item => item.length > 0)
+    //   const number = Number(row.reduce((arr, item) => Number(item) ? [...arr, item] : arr, []).join(''))
+    //   const type = row.reduce((arr, item) => !Number(item) ? [...arr, item] : arr, []).join('')
 
-      return [(new Intl.NumberFormat('ru-RU').format(number)), type].join(' ')
-    }
+    //   return [(new Intl.NumberFormat('ru-RU').format(number)), type].join(' ')
+    // }
     return text
   }
 

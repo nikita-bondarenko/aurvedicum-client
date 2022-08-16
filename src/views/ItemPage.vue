@@ -86,7 +86,7 @@
             }') transparent`
           }"
         >
-          <ul class="pics__list">
+          <ul v-if="product.images.length > 1" class="pics__list">
             <li
               class="pics__item"
               v-for="item in product.images"
@@ -160,9 +160,13 @@
               <div class="item__volume">
                 <legend class="form__legend">Объем/вес</legend>
                 <BaseSelect
+                  v-if="!isOneVolume"
                   :items="product.volumes"
                   v-model:volume="volume"
                 ></BaseSelect>
+                <span class="brand-list__item" v-else>
+                  {{ volume.volume }}</span
+                >
               </div>
             </div>
 
@@ -184,7 +188,7 @@
         </div>
       </div>
 
-      <div class="item__desc">
+      <div v-show="product.description.length > 0" class="item__desc">
         <ul class="tabs">
           <li
             class="tabs__item"
@@ -230,7 +234,7 @@ import BaseSpinner from '@/components/small/BaseSpinner.vue'
 const router = useRouter()
 const productId = useRoute().params.id
 const { getProductData, addToBasket } = useApi()
-const product = ref({})
+const product = ref({ description: [] })
 const descItem = ref('')
 const volumeId = ref('')
 const volume = ref({})

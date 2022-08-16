@@ -25,6 +25,12 @@
         >Добавить</router-link
       >
       <BaseSpinner v-if="store.isLoading"></BaseSpinner>
+      <p
+        class="data-base__empty-message"
+        v-if="items.length === 0 && !store.isLoading"
+      >
+        Список пуст
+      </p>
 
       <ul class="data-base__list">
         <ListItem

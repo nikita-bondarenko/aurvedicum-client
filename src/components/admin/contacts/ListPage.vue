@@ -20,8 +20,14 @@
       Добавить</router-link
     >
     <BaseSpinner v-if="store.isLoading"></BaseSpinner>
+    <p
+      class="data-base__empty-message"
+      v-if="items.length === 0 && !store.isLoading"
+    >
+      Список пуст
+    </p>
 
-    <ul v-else class="data-base__list">
+    <ul class="data-base__list">
       <li v-for="item in items" :key="item.id" class="data-base__item">
         <div class="data-base__contact">
           <h3 class="contact__header">{{ item.header }}</h3>

@@ -1,11 +1,15 @@
 <template>
   <header class="header container">
     <div class="header__wrapper">
-      <span
-        v-if="!route.path.split('/').includes('admin') && !store.isAuth"
-        class="header__info"
-        >{{ pageTitle }}</span
-      >
+      <div ref="menuButton" class="header__menu">
+        <div class="menu-icon">
+          <div class=""></div>
+          <div class=""></div>
+          <div class=""></div>
+        </div>
+        <span>Меню</span>
+      </div>
+      <span class="header__info">{{ pageTitle }}</span>
 
       <router-link
         to="/"
@@ -18,14 +22,35 @@
           alt="Логотип интернет-магазина Aurvedicum"
         />
       </router-link>
+      <div class="header__right">
+        <router-link
+          v-if="!route.path.split('/').includes('admin')"
+          :to="{ name: 'basket' }"
+          class="header__cart"
+          :class="{ 'spinner-small': basketCounterLoading }"
+          aria-label="Корзина с товарами"
+        >
+          <svg viewBox="0 0 19 24">
+            <path
+              fill="#000"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M9.895.752c-2.6 0-4.779 1.955-4.779 4.45v.684H4.094a2.5 2.5 0 00-2.497 2.372l-.65 12.686a2.5 2.5 0 002.496 2.628h12.903a2.5 2.5 0 002.497-2.628l-.65-12.686a2.5 2.5 0 00-2.497-2.372h-1.023v-.685c0-2.494-2.178-4.45-4.778-4.45zm4.778 8.362a.854.854 0 01-.5 1.55.856.856 0 01-.5-1.55V6.886H6.116v2.228a.855.855 0 01-.5 1.55.856.856 0 01-.5-1.55V6.886H4.094a1.5 1.5 0 00-1.499 1.423l-.65 12.686a1.5 1.5 0 001.498 1.577h12.903a1.5 1.5 0 001.498-1.577l-.65-12.686a1.5 1.5 0 00-1.498-1.423h-1.023v2.228zm-1-3.228v-.685c0-1.868-1.653-3.45-3.778-3.45-2.126 0-3.779 1.582-3.779 3.45v.685h7.557z"
+            ></path>
+          </svg>
+          <span
+            v-if="basketItemsQuantity > 0"
+            class="header__count"
+            aria-label="Количество товаров"
+            >{{ store.basketItemsQuantity }}</span
+          >
+        </router-link>
 
-      <a
-        v-if="!route.path.split('/').includes('admin') && !store.isAuth"
-        class="header__tel"
-      >
-      </a>
-      <div class="header__admin" v-if="store.isAuth">
-        <button @click.prevent="logout">
+        <button
+          v-if="store.isAuth"
+          class="header__logout"
+          @click.prevent="logout"
+        >
           Выйти
           <svg
             version="1.1"
@@ -50,40 +75,19 @@
             </g>
           </svg>
         </button>
-        <span>Админ</span>
       </div>
-      <router-link
-        v-if="!route.path.split('/').includes('admin')"
-        :to="{ name: 'basket' }"
-        class="header__cart"
-        :class="{ 'spinner-small': basketCounterLoading }"
-        aria-label="Корзина с товарами"
-      >
-        <svg viewBox="0 0 19 24">
-          <path
-            fill="#000"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M9.895.752c-2.6 0-4.779 1.955-4.779 4.45v.684H4.094a2.5 2.5 0 00-2.497 2.372l-.65 12.686a2.5 2.5 0 002.496 2.628h12.903a2.5 2.5 0 002.497-2.628l-.65-12.686a2.5 2.5 0 00-2.497-2.372h-1.023v-.685c0-2.494-2.178-4.45-4.778-4.45zm4.778 8.362a.854.854 0 01-.5 1.55.856.856 0 01-.5-1.55V6.886H6.116v2.228a.855.855 0 01-.5 1.55.856.856 0 01-.5-1.55V6.886H4.094a1.5 1.5 0 00-1.499 1.423l-.65 12.686a1.5 1.5 0 001.498 1.577h12.903a1.5 1.5 0 001.498-1.577l-.65-12.686a1.5 1.5 0 00-1.498-1.423h-1.023v2.228zm-1-3.228v-.685c0-1.868-1.653-3.45-3.778-3.45-2.126 0-3.779 1.582-3.779 3.45v.685h7.557z"
-          ></path>
-        </svg>
-        <span
-          v-if="basketItemsQuantity > 0"
-          class="header__count"
-          aria-label="Количество товаров"
-          >{{ store.basketItemsQuantity }}</span
-        >
-      </router-link>
+
+      <span v-if="store.isAuth" class="header__username">Админ</span>
     </div>
   </header>
 </template>
 <script setup>
-import { computed, toRefs, watch } from 'vue'
+import { computed, toRefs, watch, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { store } from '@/store/store'
 import useApi from '@/hooks/useApi'
 const route = useRoute()
-
+const menuButton = ref(null)
 const { getBasket, fetchWithParams } = useApi()
 const { basketPaginationConfig, basketCounterLoading, basketItemsQuantity } =
   toRefs(store)
@@ -101,6 +105,77 @@ const pageTitle = computed(() => {
 
   if (route.name === 'admin') {
     return 'Аутентификация'
+  }
+
+  if (route.name === 'adminMenu') {
+    return 'Меню администратора'
+  }
+
+  if (
+    route.name === 'adminProducts' ||
+    route.name === 'adminChangeProduct' ||
+    route.name === 'adminAddProduct'
+  ) {
+    return 'Товары'
+  }
+
+  if (
+    route.name === 'adminChangeOrder' ||
+    route.name === 'adminOrderInfo' ||
+    route.name === 'adminOrderAdd' ||
+    route.name === 'adminOrders'
+  ) {
+    return 'Заказы  '
+  }
+
+  if (
+    route.name === 'adminArticles' ||
+    route.name === 'adminChangeArticle' ||
+    route.name === 'adminAddArticle'
+  ) {
+    return 'Статьи'
+  }
+
+  if (
+    route.name === 'adminNews' ||
+    route.name === 'adminChangeNew' ||
+    route.name === 'adminAddNew'
+  ) {
+    return 'Статьи'
+  }
+
+  if (
+    route.name === 'adminAdditions' ||
+    route.name === 'adminChangeAddition' ||
+    route.name === 'adminAddAddition'
+  ) {
+    return 'Статьи'
+  }
+
+  if (
+    route.name === 'adminContacts' ||
+    route.name === 'adminChangeContact' ||
+    route.name === 'adminAddContact'
+  ) {
+    return 'Контакты'
+  }
+
+  if (route.name === 'news' || route.name === 'newsItem') {
+    return 'Новости'
+  }
+  if (route.name === 'articles' || route.name === 'articlesItem') {
+    return 'Статьи'
+  }
+
+  if (route.name === 'contacts') {
+    return 'Контакты'
+  }
+
+  if (route.name === 'politic') {
+    return 'Политика конфиденц.'
+  }
+  if (route.name === 'agreement') {
+    return 'Соглашение польз.'
   }
 
   return 'Каталог'
@@ -149,49 +224,109 @@ watch(
     if (value === 'orderInfo') getBasket(basketPaginationConfig.value)
   }
 )
+onMounted(() => {
+  menuButton.value.addEventListener('click', () =>
+    store.updateProp('isMenuOpen', true)
+  )
+})
 </script>
 <style lang="scss">
 @import '@/styles/style.scss';
 
-.header__admin {
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(2px);
-  height: 100%;
-  grid-column: 1/2;
-  grid-row: 1/3;
-  flex-direction: column-reverse;
+.header__info {
+  @include fontCondenced;
+  display: inline-block;
+  vertical-align: bottom;
 
-  span {
-    display: block;
-    white-space: nowrap;
-    opacity: 0.5;
-  }
-  button {
-    line-height: 1;
-    position: relative;
-    margin-right: 20px;
-    margin-left: -6px;
-    background-color: transparent;
-    border-color: transparent;
-    cursor: pointer;
+  color: $red;
+  grid-column: 1/2;
+  grid-row: 1/2;
+
+  font-size: 32px !important;
+}
+
+.header {
+  &__username {
+    @include fontCondenced;
+    margin-left: auto;
+    width: min-content;
+    font-size: 32px !important;
     text-transform: uppercase;
-    width: fit-content;
-    font-family: inherit;
-    padding: 0 0 0 25px;
-    color: $w;
-    transition: color 0.2s ease-in-out;
+    color: $red;
+    text-align: end;
+    grid-column: 2/3;
+    grid-row: 1/2;
+  }
+  &__right {
+    display: flex;
+    grid-column: 2/3;
+    grid-row: 2/3;
+    width: min-content;
+    margin-left: auto;
+    align-items: flex-end;
+  }
+  &__cart {
+    height: 36px;
+    width: 31px;
+
+    position: relative;
     svg {
+      height: 36px;
+      width: 31px;
+
       path {
         fill: $w;
         transition: fill 0.2s ease-in-out;
       }
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      height: 20px;
     }
 
+    &:hover {
+      svg path {
+        fill: $red;
+      }
+    }
+    &.spinner-small {
+      &::after {
+        left: calc(50% - 12px);
+        top: calc(50% - 12px);
+        width: 24px;
+        height: 24px;
+        border-width: 3px;
+      }
+      &::before {
+        right: -20px;
+        bottom: -20px;
+        background: transparent;
+      }
+    }
+  }
+
+  &__logout {
+    line-height: 1;
+    margin-left: 30px;
+    width: min-content;
+    position: relative;
+    display: inline-block;
+    vertical-align: bottom;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: $w;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    padding-right: 30px;
+    transition: color 0.2s ease-in-out;
+    svg {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      height: 22px;
+    }
+    svg path {
+      fill: $w;
+      transition: fill 0.2s ease-in-out;
+    }
     &:hover {
       color: $red;
       svg path {
@@ -207,68 +342,77 @@ watch(
   }
 }
 
-.header__cart {
-  height: 33px;
-
-  svg {
-    width: 24px;
-    height: 30px;
-    path {
-      fill: $w;
-      transition: fill 0.2s ease-in-out;
-    }
-  }
-
-  &:hover {
-    svg path {
-      fill: $red;
-    }
-  }
-  &.spinner-small {
-    &::after {
-      left: calc(50% - 12px);
-      top: calc(50% - 12px);
-      width: 24px;
-      height: 24px;
-      border-width: 3px;
-    }
-    &::before {
-      right: -20px;
-      bottom: -20px;
-      background: transparent;
-    }
-  }
-}
-
 .header__logo {
   width: auto !important;
 
   height: auto !important;
   grid-row: 1/3;
-  grid-column: 1/5;
+  grid-column: 1/3;
   z-index: 0;
-  margin-top: -47px !important;
-  margin-bottom: -37px !important;
+  margin-top: -40px !important;
+  margin-bottom: -42px !important;
   img {
     height: auto !important;
   }
 }
-.header__info {
-  color: $w;
 
+.header__menu {
+  position: relative;
+  color: $w;
   grid-column: 1/2;
   grid-row: 2/3;
-}
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+  padding-left: 30px;
+  .menu-icon {
+    position: absolute;
+    top: 1px;
+    left: 0;
+    display: block;
+    width: 20px;
+    div {
+      height: 3px;
+      width: 100%;
+      color: $w;
+      border-radius: 2px;
+      background: $w;
 
-.header__cart {
-  grid-column: 4/5;
-  grid-row: 2/3;
+      transition: margin 0.2s ease-in-out, background 0.2s ease-in-out;
+    }
+    div:not(:last-child) {
+      margin-bottom: 3px;
+    }
+    // div:last-child {
+    //   margin-top: 4px;
+    //   height: 2.5px;
+    // }
+  }
+
+  &:hover {
+    color: $hover;
+
+    .menu-icon {
+      div {
+        background: $hover;
+      }
+      div:not(:last-child) {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  span {
+    line-height: 1;
+    text-transform: uppercase;
+    display: inline-block;
+    vertical-align: bottom;
+  }
 }
 
 .header__tel {
   grid-row: 2/3;
 
-  grid-column: 3/4;
+  grid-column: 4/5;
 }
 
 @media (max-width: 920px) {
@@ -280,10 +424,51 @@ watch(
 }
 
 @media (max-width: 600px) {
+  .header__info {
+    display: none;
+  }
+
   .header__admin {
     max-width: 100px;
     span {
       white-space: break-spaces;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .header__menu {
+    height: 30px;
+    span {
+      display: none;
+    }
+    .menu-icon {
+      position: absolute;
+      top: 2px;
+      left: 0;
+      display: block;
+      width: 30px;
+      div {
+        height: 4px;
+        width: 100%;
+        color: $w;
+        border-radius: 3px;
+        background: $w;
+
+        transition: margin 0.2s ease-in-out, background 0.2s ease-in-out;
+      }
+      div:not(:last-child) {
+        margin-bottom: 6px;
+      }
+    }
+    &:hover {
+      color: $hover;
+
+      .menu-icon {
+        div:not(:last-child) {
+          margin-bottom: 8px;
+        }
+      }
     }
   }
 }

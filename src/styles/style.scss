@@ -7,6 +7,7 @@ $darkGrey: #b9b9b9;
 $grey: #e2e2e2;
 $placeholder: #888;
 $w: #fff;
+$lightText: #9d9d9d;
 
 $hover: lighten(#c73f03, 10%);
 
@@ -20,7 +21,20 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
 
+main {
+    min-height: 500px;
+}
 
+
+
+@mixin back {
+    position: fixed;
+    content: '';
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
 
 @mixin disabled {
     &::before {
@@ -89,7 +103,17 @@ input::-webkit-inner-spin-button {
     }
 }
 
-
+.title {
+    @include fontCondenced;
+    color: $red;
+    grid-column: 1/2;
+    grid-row: 1/2;
+    white-space: nowrap;
+    font-size: 32px !important;
+    display: inline-block;
+    text-transform: uppercase;
+    margin: 0;
+}
 
 .button {
     &--primery {
@@ -136,13 +160,10 @@ input::-webkit-inner-spin-button {
     line-height: 12px;
     min-width: 18px;
     height: 18px;
-    bottom: -1px;
+    bottom: -5px;
     right: -5px;
 }
 
-.header__cart {
-    height: 33px;
-}
 
 
 .button-del {
@@ -191,8 +212,8 @@ input::-webkit-inner-spin-button {
 
 .subprice {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 6px;
+    right: 6px;
     display: grid;
 
     grid-gap: 0 10px;
@@ -309,7 +330,7 @@ input::-webkit-inner-spin-button {
         grid-template-columns: repeat(4, 270px);
     }
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1240px) {
         .catalog__list {
             grid-template-columns: repeat(3, 270px);
         }

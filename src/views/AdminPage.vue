@@ -1,5 +1,5 @@
 <template>
-  <div class="container content">
+  <main class="container content">
     <div v-if="store.isAuth">
       <router-view> </router-view>
     </div>
@@ -29,7 +29,7 @@
         </div>
       </form>
     </div>
-  </div>
+  </main>
 </template>
 <script setup>
 import { reactive, watch } from 'vue'
@@ -110,6 +110,7 @@ $ml: 20px;
 
 .form {
   &__gallery {
+    padding: 30px 0;
     display: grid;
     grid-template-columns: repeat(2, max-content);
     grid-gap: 15px;

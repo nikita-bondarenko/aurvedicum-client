@@ -1,7 +1,7 @@
 <template>
-  <div class="container content">
+  <main class="container content">
     <span>Не удалось найти страницу</span>
-  </div>
+  </main>
 </template>
 <script setup>
 import { store } from '@/store/store'
