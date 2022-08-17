@@ -211,7 +211,7 @@
           </p>
         </div>
       </div>
-      <div class="item__recomend">
+      <div id="recomend" class="item__recomend">
         <h3 class="item__title">Рекомендуем также</h3>
         <CatalogRecomend :recomend="product.recomend"></CatalogRecomend>
       </div>

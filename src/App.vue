@@ -15,6 +15,11 @@ import MenuModal from '@/components/MenuModal.vue'
 
 @import '@/styles/style.scss';
 
+:focus,
+:focus-visible {
+  outline: none !important;
+}
+
 body::before {
   z-index: -10000;
   @include back;
@@ -299,9 +304,6 @@ img {
 
 @media (max-width: 380px) {
   .item {
-    grid-template-rows:
-      330px 490px
-      1fr !important;
     &__row {
       grid-gap: 20px 10px !important;
     }
@@ -314,10 +316,6 @@ img {
     &__title {
       line-height: 1.2;
     }
-  }
-
-  .tabs__item:not(:last-child) {
-    margin: 0;
   }
 
   .tabs__link {

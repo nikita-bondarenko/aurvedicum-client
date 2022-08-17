@@ -12,7 +12,6 @@
         :src="IMAGE_STORE + product.images[0].filename"
         width="120"
         height="120"
-        srcset="img/product-square-4@2x.jpg 2x"
         alt="Название товара"
       />
     </div>

@@ -1,5 +1,5 @@
 import useApi from '@/hooks/useApi'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import router from '@/router'
 import { IMAGE_STORE } from '@/config'
 import BaseFilter from '@/components/BaseFilter.vue'
@@ -332,6 +332,16 @@ const useCatalogViewRecomend = (route, recomend) => {
   const getData = async () => {
     editedItems.value = await getRecomendProducts(recomend, route.params.id)
   }
+  onMounted(() => {
+    const recomendBlock = document.getElementById('recomend')
+    watch(() => editedItems.value, (value) => {
+      if (value.length > 0) {
+        recomendBlock.style.display = 'block'
+      } else {
+        recomendBlock.style.display = 'none'
+      }
+    }, { deep: true, immediate: true })
+  })
 
   getData()
 

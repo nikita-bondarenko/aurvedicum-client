@@ -7,7 +7,6 @@ main {
 
 .menu-open {
 
-
     main {
         transform: translateX(340px);
     }
@@ -95,15 +94,20 @@ main {
 
 }
 
+@media (max-width: 1080px) {
+    .menu-open {
+        overflow-y: hidden;
+
+        main {
+            transform: translateX(0px);
+        }
+    }
+}
+
 @media (max-width: 500px) {
     .nav {
         padding: 50px 20px 20px;
         width: 230px;
     }
 
-    .menu-open {
-        main {
-            transform: translateX(230px);
-        }
-    }
 }

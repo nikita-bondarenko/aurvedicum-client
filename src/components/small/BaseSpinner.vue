@@ -17,10 +17,10 @@
     right: 0;
     left: 0;
     bottom: 0;
-    border: 20px solid transparent;
+    border: 15px solid transparent;
     border-radius: 100%;
     border-bottom-color: $red;
-    animation: rotate 0.4s linear reverse infinite;
+    animation: rotate 0.8s ease-in-out reverse infinite;
   }
 }
 
