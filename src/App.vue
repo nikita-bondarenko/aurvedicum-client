@@ -4,33 +4,65 @@
   <router-view></router-view>
 
   <BaseFooter></BaseFooter>
+  <teleport to="#back">
+    <div class="back__image"></div>
+    <div class="back__shadow"></div>
+  </teleport>
 </template>
 <script setup>
 import BaseHeader from './components/BaseHeader.vue'
 import BaseFooter from './components/BaseFooter.vue'
 import MenuModal from '@/components/MenuModal.vue'
+import { onMounted, nextTick } from 'vue'
+
+onMounted(() => {
+  const back = document.getElementById('back')
+  nextTick(() => {
+    back.style.width = `${document.body.clientWidth}px`
+    back.style.height = `${screen.height}px`
+  })
+})
 </script>
 <style lang="scss">
 @import '@/../public/css/style.min.css';
 
 @import '@/styles/style.scss';
 
+.form__error-block {
+  border-color: $red;
+  h4 {
+    color: $red;
+  }
+}
+
 :focus,
 :focus-visible {
   outline: none !important;
 }
 
-body::before {
-  z-index: -10000;
-  @include back;
-  background: no-repeat top left / cover url('../public/img/back.jpg');
-  transform: rotate(180deg);
+@mixin parentSize {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-body::after {
-  z-index: -9000;
-  @include back;
-  background: rgba($color: #000000, $alpha: 0.6);
+.back {
+  z-index: -10000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  &__image {
+    @include parentSize();
+    background: no-repeat top left / cover url('../public/img/back.jpg') red;
+    transform: rotate(180deg);
+  }
+  &__shadow {
+    @include parentSize();
+
+    background: rgba($color: #000000, $alpha: 0.6);
+  }
 }
 
 .header,
@@ -207,6 +239,15 @@ img {
 }
 
 @media (max-width: 740px) {
+  .content__top {
+    display: none;
+  }
+  // .breadcrumbs {
+  // }
+  .button--second {
+    padding-top: 19px !important;
+  }
+
   .settings {
     border-right: 0px solid $grey;
   }
@@ -228,10 +269,9 @@ img {
   }
 
   .filter__button-wrapper {
-    display: flex;
-    align-items: center;
+    display: inline-block;
+    vertical-align: middle;
     margin-bottom: 50px;
-    margin-left: 25px;
   }
 
   .filter__form {
@@ -335,8 +375,8 @@ img {
   }
 
   .container {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .catalog__list {

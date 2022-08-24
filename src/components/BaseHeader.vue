@@ -261,14 +261,13 @@ onMounted(() => {
     display: flex;
     grid-column: 2/3;
     grid-row: 2/3;
-    width: min-content;
+    width: max-content;
     margin-left: auto;
     align-items: flex-end;
   }
   &__cart {
     height: 36px;
     width: 31px;
-
     position: relative;
     svg {
       height: 36px;
@@ -474,6 +473,11 @@ onMounted(() => {
 }
 
 @media (max-width: 400px) {
+  .header__cart.spinner-small::before {
+    right: -10px;
+    bottom: -10px;
+    background: transparent;
+  }
   .header__admin {
     transform: translateY(0px);
 

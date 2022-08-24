@@ -22,10 +22,7 @@ const useContentList = (url) => {
   const getData = () =>
     fetchWithParams('get', url, config.value).then((res) => {
       data.value = res.data
-
-      console.log(res.data)
     })
-
   getData()
   watch(
     () => config.value,
@@ -44,7 +41,6 @@ const useContentItem = (route, url) => {
   const data = ref({ body: [{ id: 1, body: [] }] })
   fetch('get', `${url + (route.params.id ? '/' + route.params.id : '')}`).then(res => {
     data.value = res.data
-    console.log(data.value)
   })
   return {
     store,

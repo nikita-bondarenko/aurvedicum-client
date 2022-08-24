@@ -1,5 +1,13 @@
 <template>
-  <div :class="{ 'modal--open': store.isMenuOpen }" class="modal" ref="modal">
+  <div
+    :class="{
+      'modal--open': store.isMenuOpen
+    }"
+    @mousedown="swipeOn"
+    @mouseup="swipeOff"
+    class="modal"
+    ref="modal"
+  >
     <div ref="nav" class="nav" :class="{ 'nav--open': store.isMenuOpen }">
       <h3 class="nav__title title">Меню</h3>
       <nav class="nav__nav">
@@ -52,6 +60,7 @@ onMounted(() => {
     element.value.addEventListener(
       'click',
       (event) => {
+        if (store.isDisabled) return
         event.stopPropagation()
         if (event.currentTarget === modal.value) {
           store.updateProp('isMenuOpen', false)
@@ -96,6 +105,67 @@ watch(
     }
   }
 )
+
+onMounted(() => {
+  let x
+  const left = -nav.value.clientWidth
+
+  /* eslint-disable */
+  nav.value.style.left = `${left}px`
+
+  const disable = () => {
+    store.updateProp('isDisabled', true)
+    setTimeout(() => store.updateProp('isDisabled', false), 500)
+  }
+
+  watch(
+    () => store.isMenuOpen,
+    (value) => {
+      if (value) {
+        nav.value.style.left = '0'
+        disable()
+      } else {
+        nav.value.style.left = `${left}px`
+        disable()
+      }
+    },
+    { immediate: true }
+  )
+
+  function onMove(event) {
+    if (store.isDisabled) return
+    if (Math.floor(event.changedTouches[0].clientX) < x) {
+      nav.value.style.left = `${
+        Math.floor(event.changedTouches[0].clientX) - x
+      }px`
+    }
+  }
+
+  modal.value.addEventListener('touchstart', (event) => {
+    if (!store.isMenuOpen) return
+    nav.value.classList.add('touched')
+    x = Math.floor(event.changedTouches[0].clientX)
+
+    window.addEventListener('touchmove', onMove)
+  })
+
+  const close = (e) => {
+    if (store.isDisabled) return
+    if (x - Math.floor(e.changedTouches[0].clientX) > 50) {
+      store.updateProp('isMenuOpen', false)
+    } else {
+      nav.value.style.left = '0'
+    }
+  }
+
+  document.addEventListener('touchend', (e) => {
+    if (!store.isMenuOpen) return
+    nav.value.classList.remove('touched')
+
+    window.removeEventListener('touchmove', onMove)
+    close(e)
+  })
+})
 </script>
 <style lang="scss">
 @import '@/styles/modal-menu.scss';

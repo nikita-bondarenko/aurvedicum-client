@@ -257,6 +257,7 @@ export default defineComponent({
 
 @media (max-width: 510px) {
   .product {
+    position: relative;
     grid-template-columns: auto 30px;
     grid-template-rows: 30px auto;
 
@@ -298,15 +299,13 @@ export default defineComponent({
     }
 
     &__del {
-      grid-column: 2/3;
-      grid-row: 1/2;
-      margin: auto;
+      margin-left: auto;
     }
   }
 
   .cart__list {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    // grid-template-columns: 1fr 1fr;
     grid-gap: 60px 30px;
   }
 

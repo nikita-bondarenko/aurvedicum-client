@@ -29,25 +29,29 @@ main {
         background: rgba($almostDark, .5);
     }
 
+}
 
+.touched {
+    transition-property: none !important;
 }
 
 .nav {
     padding: 50px 50px 40px;
     position: absolute;
     top: 0;
-    transform: translateX(-100%);
     display: block;
     background-color: $w;
     height: 100%;
     width: 340px;
-    transition: transform .2s ease-in-out;
-
+    transition-property: left;
+    transition-duration: .2s;
+    transition-timing-function: ease-in-out;
 
     &--open {
-        transform: translateX(0);
-
+        left: 0;
     }
+
+
 
     &__nav {
         margin-top: 30px;
@@ -67,6 +71,7 @@ main {
         font-size: 20px;
         color: $darkGrey;
         transition: color .2s ease-in-out;
+        line-height: 1;
 
         &::after {
             position: absolute;
@@ -74,7 +79,7 @@ main {
             height: 3px;
             width: 100%;
             right: 0;
-            bottom: -6px;
+            bottom: -10px;
             background: transparent;
             transition: background .2s ease-in-out, bottom .2s ease-in-out;
         }
@@ -84,7 +89,7 @@ main {
 
             &:after {
                 background: $hover;
-                bottom: -1px;
+                bottom: -6px;
             }
         }
 

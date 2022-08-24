@@ -343,6 +343,7 @@ main {
     }
 
     @media (max-width:740px) {
+
         .catalog__list {
             grid-template-columns: repeat(2, 1fr);
         }
